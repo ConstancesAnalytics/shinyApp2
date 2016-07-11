@@ -1,10 +1,10 @@
-#test YOHOOUUUUUUUUUUU
+
 library('shiny')
 library('ggplot2')  # for the diamonds dataset
 library('DT')
 library('dplyr')
 library('reshape2')
-#setwd("U:/R/App9")
+#setwd("~/gitAPP/shinyApp2")
 # load table "para"
 load('./paracl_aff_rom.RData')
 
@@ -93,7 +93,8 @@ para$SOC_Sex <- as.factor(para$SOC_Sex)
 para$SOC_CES_NCes <- as.factor(para$SOC_CES_NCes)
 para$SOC_DNaissance <- as.Date(para$SOC_DNaissance, "%Y-%m-%d")
 para$SOC_DatExam <- as.Date(para$SOC_DatExam, "%Y-%m-%d")
-
+para$SOC_anne <- as.factor(format(para$SOC_DatExam, "%Y"))
+para$SOC_moisanne <- as.factor(format(para$SOC_DatExam, "%m%y"))
 
 #Calcul de l'age
 para$age=as.numeric(((para$SOC_DatExam-para$SOC_DNaissance )/365.5))
@@ -114,6 +115,9 @@ levels(para$clas_age45an) <- c('18-45 ans','45 ans et plus')
 # define para_num et others
 para_num  <- para[ , sapply(para,  is.numeric)]
 para_num$SOC_DatExam<- para$SOC_DatExam
+para_num$SOC_moisanne<-para$SOC_moisanne
+para_num$SOC_anne<- para$SOC_anne
+
 #para_fac  <- para[ , sapply(para,  is.factor)]
 
 para_num$CESantenne <- para$SOC_CES_Antenne

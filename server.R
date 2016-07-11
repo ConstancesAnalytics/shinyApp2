@@ -14,7 +14,7 @@ para1 <- reactive({
      para<-subset(para,input$dateRange[1]<= SOC_DatExam & input$dateRange[2]>= SOC_DatExam )
       #para %>%filter(input$dateRange[1]<= SOC_DatExam, input$dateRange[2]>= SOC_DatExam )
      nom_var0=subset(dic_nom_para, categorie==input$VAR)
-     vect_select0=c(nom_var0$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex')
+     vect_select0=c(nom_var0$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne')
      para20<-para %>%  select( which(names(para) %in% vect_select0))
      para20
 
@@ -44,7 +44,7 @@ para_num1 <- reactive({
 
   output$variable3 <- renderUI({
     para<-para1()
-    all.list_num<-colnames(para)
+    all.list_num<-c(colnames(para),c('SOC_moisanne','SOC_anne','CESantenne'))
     dic_nom_para_rest<-dic_nom_para %>% filter(variable %in%all.list_num)
     selectInput("variable3", "variable3", choices = dic_nom_para_rest$nom, selected = dic_nom_para_rest$nom[1])
   })
