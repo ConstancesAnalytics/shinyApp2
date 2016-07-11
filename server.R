@@ -14,7 +14,7 @@ para1 <- reactive({
      para<-subset(para,input$dateRange[1]<= SOC_DatExam & input$dateRange[2]>= SOC_DatExam )
       #para %>%filter(input$dateRange[1]<= SOC_DatExam, input$dateRange[2]>= SOC_DatExam )
      nom_var0=subset(dic_nom_para, categorie==input$VAR)
-     vect_select0=c(nom_var0$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne')
+     vect_select0=c(nom_var0$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne', 'SOC_NConstances')
      para20<-para %>%  select( which(names(para) %in% vect_select0))
      para20
 
@@ -98,9 +98,9 @@ para_num1 <- reactive({
   })
   output$variable9 <- renderUI({
     para<-para1()
-    all.list_num<-colnames(para)
-    dic_nom_para_rest<-dic_nom_para %>% filter(variable %in%all.list_num)
-    selectInput("variable9", "variable9", choices = dic_nom_para_rest$nom , selected = dic_nom_para_rest$nom[2], multiple = TRUE)
+    all.list_num<-c(colnames(para),'SOC_NConstances')
+    #dic_nom_para_rest<-dic_nom_para %>% filter(variable %in%all.list_num)
+    selectInput("variable9", "variable9", choices = all.list_num , selected = all.list_num[1:2], multiple = TRUE)
   })
   output$variable10a <- renderUI({
     para<-para1()
@@ -231,8 +231,8 @@ output$plot3 <- renderPlotly({
 
 output$mytable1 <- DT::renderDataTable({
   para<-para1()
-  var_tmp9=dic_nom_para$variable[which(dic_nom_para$nom==input$variable9)]
-  DT::datatable(para[ , var_tmp9,drop = FALSE],
+  #var_tmp9=dic_nom_para$variable[which(dic_nom_para$nom==input$variable9)]
+  DT::datatable(para[ , input$variable9,drop = FALSE],
                 filter = 'top',extensions = 'Buttons', options = list(
                   dom = 'Bfrtip',
                   lengthMenu = list(c(5, 30, -1), c('5', '15', 'All')),
