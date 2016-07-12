@@ -24,7 +24,7 @@ para_num1 <- reactive({
     para_num0<-subset(para_num,input$dateRange[1]<= SOC_DatExam & input$dateRange[2]>= SOC_DatExam  )
     nom_var1=subset(dic_nom_para, categorie==input$VAR)
     vect_select=c(nom_var1$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex')
-    para_num20<-para_num %>% select( which(names(para_num) %in% vect_select)  )
+    para_num20<-para_num0 %>% select( which(names(para_num) %in% vect_select)  )
     para_num20
     })
 
@@ -115,10 +115,12 @@ para_num1 <- reactive({
     dic_nom_para_rest<-dic_nom_para %>% filter(variable %in%all.list_num)
     selectInput("variable10b", "variable10b", choices = dic_nom_para_rest$nom , selected = dic_nom_para_rest$nom[1])
   })
+
+
   output$datatable1  <- DT::renderDataTable({
     para_num<-para_num1()
     ifelse(input$CES %in% levels(para_num$CESantenne),
-      para_num_CESfilt <-  para_num%>%filter(CESantenne == input$CES)%>%select(-CESantenne,-SOC_DatExam,-par_ces) ,
+      para_num_CESfilt <-  para_num%>%filter(CESantenne == input$CES)%>%select(-CESantenne,-SOC_DatExam,-par_ces ) ,
       para_num_CESfilt <-  para_num%>%select(-CESantenne,-SOC_DatExam,-par_ces))
     data_sum <- as.data.frame(t(sapply(para_num_CESfilt, resumer)))
     DT::datatable(
@@ -142,9 +144,10 @@ para_num1 <- reactive({
   })
 
   output$summary  <- DT::renderDataTable({
-    var_tmp=dic_nom_para$variable[which(dic_nom_para$nom==input$variable2)]
     para_num<-para_num1()
     para<-para1()
+    var_tmp=dic_nom_para$variable[which(dic_nom_para$nom==input$variable2)]
+
     var_tmp=input$variable2
     var_tmp2=dic_nom_para$variable[which(dic_nom_para$nom==var_tmp)]
     data_summary <-resumer_sans_nom(para_num[,var_tmp2])
@@ -158,9 +161,10 @@ para_num1 <- reactive({
 
 
   output$datatable3  <- DT::renderDataTable({
-    var_tmp=dic_nom_para$variable[which(dic_nom_para$nom==input$variable2)]
     para_num<-para_num1()
     para<-para1()
+    var_tmp=dic_nom_para$variable[which(dic_nom_para$nom==input$variable2)]
+
     data_sum2 <- do.call(rbind, tapply(para_num[,var_tmp], para[,input$variable02], resumer_borne, vect = get(var_tmp, dict_para)))
     DT::datatable(
       data_sum2, options = list(
@@ -223,7 +227,7 @@ output$plot3 <- renderPlotly({
   para_num<-para_num1()
   para<-para1()
   var_tmp8=dic_nom_para$variable[which(dic_nom_para$nom==input$variable8)]
-    p <- ggplot(para, aes(as.factor(para[, input$variable10]), para[,var_tmp8]  )) + geom_boxplot()+ geom_jitter()
+    p <- ggplot(para, aes(as.factor(para[, input$variable10]), para[,var_tmp8]  )) + geom_boxplot()
     p3 <- ggplotly(p)  %>% layout(autosize = F,  height = 700,width = 1200)
     p3
 
@@ -254,7 +258,7 @@ output$plot4 <- renderPlot({
   para<-para1()
   var_tmp10a=dic_nom_para$variable[which(dic_nom_para$nom==input$variable10a)]
   var_tmp10b=dic_nom_para$variable[which(dic_nom_para$nom==input$variable10b)]
-  p <- ggplot(para, aes(as.factor(para[, var_tmp10a]),  para[,var_tmp10b]  )) + geom_boxplot()
+  p <- ggplot(para, aes(as.factor(para[, var_tmp10a]),  para[,var_tmp10b]  )) + geom_boxplot()+ geom_jitter()
   print(p)
 
 }, height = 700, width = 1200)
