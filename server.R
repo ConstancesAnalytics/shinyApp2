@@ -10,6 +10,7 @@ library('plotly')
 
 shinyServer(function(input, output) {
 
+
 para1 <- reactive({
      para<-subset(para,input$dateRange[1]<= SOC_DatExam & input$dateRange[2]>= SOC_DatExam )
       #para %>%filter(input$dateRange[1]<= SOC_DatExam, input$dateRange[2]>= SOC_DatExam )

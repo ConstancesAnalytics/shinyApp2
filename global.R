@@ -24,14 +24,9 @@ para <- select(para, VDL_BiAvCorr,VDL_BiSaCorr,VDL_CeProAmbMono,VDL_ExaReal,VDL_
 
 
 
-
 para_cols<-colnames(para)
 
 #selection des noms des variables
-
-#rename(para, VDL.binoculaire.avec.correction = VDL_BiAvCorr)
-
-
 
 
 para$resp_proc= as.factor(para$resp_proc)
@@ -39,28 +34,29 @@ para$bras =as.factor(para$bras)
 
 
 
-para$AUD_AuDr500 =as.factor(as.numeric(as.character(para$AUD_AuDr500)))
-para$AUD_AuDr1000=as.factor(as.numeric(as.character(para$AUD_AuDr1000)))
-para$AUD_AuDr2000=as.factor(as.numeric(as.character(para$AUD_AuDr2000)))
-para$AUD_AuDr4000=as.factor(as.numeric(as.character(para$AUD_AuDr4000)))
-para$AUD_AuDr8000=as.factor(as.numeric(as.character(para$AUD_AuDr8000)))
-para$AUD_AuGa500 =as.factor(as.numeric(as.character(para$AUD_AuGa500)))
-para$AUD_AuGa1000=as.factor(as.numeric(as.character(para$AUD_AuGa1000)))
-para$AUD_AuGa2000=as.factor(as.numeric(as.character(para$AUD_AuGa2000)))
-para$AUD_AuGa4000=as.factor(as.numeric(as.character(para$AUD_AuGa4000)))
-para$AUD_AuGa8000=as.factor(as.numeric(as.character(para$AUD_AuGa8000)))
+para$AUD_AuDr500 =as.numeric(as.character(para$AUD_AuDr500))
+para$AUD_AuDr1000=as.numeric(as.character(para$AUD_AuDr1000))
+para$AUD_AuDr2000=as.numeric(as.character(para$AUD_AuDr2000))
+para$AUD_AuDr4000=as.numeric(as.character(para$AUD_AuDr4000))
+para$AUD_AuDr8000=as.numeric(as.character(para$AUD_AuDr8000))
+para$AUD_AuGa500 =as.numeric(as.character(para$AUD_AuGa500))
+para$AUD_AuGa1000=as.numeric(as.character(para$AUD_AuGa1000))
+para$AUD_AuGa2000=as.numeric(as.character(para$AUD_AuGa2000))
+para$AUD_AuGa4000=as.numeric(as.character(para$AUD_AuGa4000))
+para$AUD_AuGa8000=as.numeric(as.character(para$AUD_AuGa8000))
 #S?paration entre les variables Numerique et facteur
 
-para_dic=para[names(dict_para)]
-
-
-para_1 <- para_dic[ , sapply(dict_para, function(x) length(x)==2)]
-para_2 <- para_dic[,!sapply(dict_para, function(x) length(x)==2) ]
-para_1_corr <- as.data.frame(apply(para_1, 2, function(x) as.numeric( x)))
-para_2_corr <- as.data.frame(apply(para_2, 2, function(x) as.factor( x)))
-
-para_else= para[setdiff(para_cols,names(dict_para))]
-para <- cbind(para_1_corr, para_2_corr,para_else)
+#para_dic=para[names(dict_para)]
+#
+#
+#para_1 <- para_dic[ , sapply(dict_para, function(x) length(x)==2)]
+#para_2 <- para_dic[,!sapply(dict_para, function(x) length(x)==2) ]
+#para_1_corr <- as.data.frame(apply(para_1, 2, function(x) as.numeric( x)))
+#para_2_corr <- as.data.frame(apply(para_2, 2, function(x) as.factor( x)))
+#
+#para_else= para[setdiff(para_cols,names(dict_para))]
+#para <- cbind(para_1_corr, para_2_corr,para_else)
+#
 
 #Ajouter des variables
 #IMC
@@ -78,10 +74,30 @@ para$BIO_ChoTot_LDL = borne(para$BIO_ChoTot, 1.5 ,15)
 para$BIO_ChoHDL_LDL= borne(para$BIO_ChoHDL, 0.25 ,3.5)
 para$BIO_Trig_LDL  =borne(para$BIO_Trig, 0.1 ,3.75)
 
-para$ldl= para$BIO_ChoTot_LDL-para$BIO_ChoHDL_LDL-(para$BIO_Trig_LDL/2.2)
+para$ldl= as.numeric(para$BIO_ChoTot_LDL-para$BIO_ChoHDL_LDL-(para$BIO_Trig_LDL/2.2))
+para$class_ldl=as.factor(cut(para$ldl, breaks = c(-1,4.2,11), right = FALSE,include.lowest = TRUE))
 
-para$class_ldl=cut(para$ldl, breaks = c(-1,4.2,11), right = FALSE,include.lowest = TRUE)
+#SEXe level
+levels(para$SOC_Sex)<-c('M','F')
+#Tour de tail
 
+para$RTH=round(para$TAI_MesToTai/para$HAN_MesToHan,2)
+
+para$class_rth=as.factor(ifelse( ((para$SOC_Sex==2 & para$RTH <=0.8 ) | (para$SOC_Sex==1 & para$RTH <=0.95 )),'Normal', 'Obésité abdominale'))
+
+
+para$VEMS =apply(para[,c('SPI_VEMS1','SPI_VEMS2','SPI_VEMS3')],1, max, na.rm=FALSE)
+para$CVF =apply(para[,c('SPI_CVF1','SPI_CVF1','SPI_CVF1')],1, max, na.rm=FALSE)
+
+para$Insuf_resp=round(para$VEMS/para$CVF*100,2)
+para$Class_Insuf_resp=as.factor(cut(para$Insuf_resp, breaks = c(0,70,500),  right = FALSE,include.lowest = TRUE))
+
+para$VDL_AC_Mal = ifelse(para$VDL_OeDrAvCorr > para$VDL_OeGaAvCorr ,para$VDL_OeDrAvCorr ,para$VDL_OeGaAvCorr)
+para$VDL_CLASS_AC_Mal= as.factor(ifelse(para$VDL_AC_Mal >3 ,'NORMAL','MALVOYANCE'))
+
+
+para$VDL_SC_Mal = ifelse(para$VDL_OeDrSaCorr > para$VDL_OeGaSaCorr ,para$VDL_OeDrSaCorr ,para$VDL_OeGaSaCorr)
+para$VDL_CLASS_SC_Mal= as.factor(ifelse(para$VDL_SC_Mal >3 ,'NORMAL','MALVOYANCE'))
 
 para$par_ces <- para$SOC_CES_NCes
 
@@ -98,12 +114,12 @@ para$SOC_moisanne <- as.factor(format(para$SOC_DatExam, "%m%y"))
 
 #Calcul de l'age
 para$age=as.numeric(((para$SOC_DatExam-para$SOC_DNaissance )/365.5))
-levels(para$SOC_Sex)<-c('M','F')
+
 para$clas_age3=cut(floor(para$age), breaks = c(18,30,60,100), right = FALSE)
 levels(para$clas_age3) <- c('18-29 ans','30-59 ans', '60 ans et plus')
 
 
-dcast(para, SOC_Sex + clas_age3 ~ class_IMC )
+
 
 
 para$clas_age5=cut(floor(para$age), breaks = c(18,35,45,55,65,74), right = FALSE,include.lowest = TRUE)

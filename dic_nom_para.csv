@@ -1,0 +1,162 @@
+variable;nom;categorie
+VDL_BiAvCorr;VDL binoculaire avec correction;Acuité visuelle
+VDL_BiSaCorr;VDL binoculaire sans correction;Acuité visuelle
+VDL_CeProAmbMono;VDL cécité monoculaire;Acuité visuelle
+VDL_ExaReal;VDL réalisé;Acuité visuelle
+VDL_OeDrAvCorr;VDL droite avec correction;Acuité visuelle
+VDL_OeDrSaCorr;VDL droite sans correction;Acuité visuelle
+VDL_SC_Mal;Sans Correction;Acuité visuelle
+VDL_CLASS_SC_Mal;class SC ML p 3;Acuité visuelle
+VDL_AC_Mal;Sans Correction;Acuité visuelle
+VDL_CLASS_AC_Mal;class AC ML p 3;Acuité visuelle
+VDL_OeGaAvCorr;VDL gauche avec correction;Acuité visuelle
+VDL_OeGaSaCorr;VDL gauche sans correction;Acuité visuelle
+VDP_BiAvCorr;VDP binoculaire avec correction;Acuité visuelle
+VDP_BiSaCorr;VDP binoculaire sans correction;Acuité visuelle
+VDP_CeProAmbMono;VDP cécité monoculaire;Acuité visuelle
+VDP_ExaReal;VDP réalisé;Acuité visuelle
+VDP_OeDrAvCorr;VDP droite avec correction;Acuité visuelle
+VDP_OeDrSaCorr;VDP droite sans correction;Acuité visuelle
+VDP_OeGaAvCorr;VDP gauche avec correction;Acuité visuelle
+VDP_OeGaSaCorr;VDP gauche sans correction;Acuité visuelle
+AUD_AuDr1000;Oreille Droite 1000Hz;Audition
+AUD_AuDr2000;Oreille Droite 2000Hz;Audition
+AUD_AuDr4000;Oreille Droite 4000Hz;Audition
+AUD_AuDr500;Oreille Droite 500Hz;Audition
+AUD_AuDr8000;Oreille Droite 8000Hz;Audition
+AUD_AuGa1000;Oreille Gauche 1000Hz;Audition
+AUD_AuGa2000;Oreille Gauche 2000Hz;Audition
+AUD_AuGa4000;Oreille Gauche 4000Hz;Audition
+AUD_AuGa500;Oreille Gauche 500Hz;Audition
+AUD_AuGa8000;Oreille Gauche 8000Hz;Audition
+AUD_ExaReal;Audiogramme réalisé;Audition
+BIO_Alat;ALAT;Prélèment sanguin - biochimie
+BIO_ChoHDL;HDL_cholestérol;Prélèment sanguin - biochimie
+BIO_ChoTot;Cholestérol total;Prélèment sanguin - biochimie
+BIO_Crea;Créatininémie;Prélèment sanguin - biochimie
+BIO_Gam;GammaGT;Prélèment sanguin - biochimie
+BIO_Glyc;Glycémie;Prélèment sanguin - biochimie
+BIO_Trig;Triglycérides;Prélèment sanguin - biochimie
+class_ldl;classe ldl;Prélèment sanguin - biochimie
+ldl; ldl calculer;Prélèment sanguin - biochimie
+class_BIO_ChoHDL;Classe HDL;Prélèment sanguin - biochimie
+class_BIO_Trig;Classe TRIG;Prélèment sanguin - biochimie
+class_BIO_ChoTot;Classe Cholestérol total;Prélèment sanguin - biochimie
+HEM_AspSer;Aspect sérum;Prélèment sanguin - biochimie
+HAN_ExaReal;Tour de hanches réalisé;Biométrie
+HAN_MesToHan;Tour de hanches;Biométrie
+HAU_ExaReal;Taille réalisé;Biométrie
+HAU_MesTail;Taille;Biométrie
+OMB_ExaReal;Périmètre ombilical réalisé;Biométrie
+OMB_MesPeri;Périmètre ombilical;Biométrie
+POI_ExaReal;Poids réalisé;Biométrie
+POI_MesPoi;Poids;Biométrie
+TAI_ExaReal;Tour de taille réalisé;Biométrie
+TAI_MesToTai;Tour de taille;Biométrie
+class_IMC;BMI ou IMC;Biométrie
+DEN_ConcDen1;Conclusions dentaires;Dent
+DEN_DerExaDen;Dernier examen dentaire;Dent
+DEN_GinGiv;Gingivite;Dent
+DEN_LesMuq;Lésions muqueuses;Dent
+DEN_NbDenDefCar;Nb dents définitives cariées;Dent
+DEN_NbDenDefExt;Nb dents définitives extraites;Dent
+DEN_NbDenDefObt;Nb dents définitives obturées;Dent
+DEN_NbDenDefSai;Nb dents définitives saines;Dent
+DEN_NbProAdj;nb prothèses adjacentes;Dent
+DEN_NbProCon;nb prothèses conjointes;Dent
+DEN_Orth;Orthodontie;Dent
+DEN_PlaBac;Plaque bactérienne;Dent
+DEN_PreTar;Présence de tartre;Dent
+DEN_SilAnf16;Sillons anfractueux n°16;Dent
+DEN_SilAnf26;Sillons anfractueux n°26;Dent
+DEN_SilAnf36;Sillons anfractueux n°36;Dent
+DEN_SilAnf46;Sillons anfractueux n°46;Dent
+DEN_TrbATM;Trouble ATM;Dent
+ECG_ExaReal;ECG réalisé;ECG
+HEM_BasoPhi;PNB;Prélèment sanguin - hématologie
+HEM_EosiPhi;PNE;Prélèment sanguin - hématologie
+HEM_GloBla;Leucocytes;Prélèment sanguin - hématologie
+HEM_GloRou;Hématies;Prélèment sanguin - hématologie
+HEM_Hemato;Hématocrite;Prélèment sanguin - hématologie
+HEM_Hemo;Hémoglobinémie;Prélèment sanguin - hématologie
+HEM_Lympho;Lymphocytes;Prélèment sanguin - hématologie
+HEM_Monocy;Monocytes;Prélèment sanguin - hématologie
+HEM_NeuPhi;PNN;Prélèment sanguin - hématologie
+HEM_Plaq;Plaquettes;Prélèment sanguin - hématologie
+HEM_VolGlobMoy;VGM;Prélèment sanguin - hématologie
+SAN_DiffPrel;Difficultés prélèvement;Prélèvement sanguin
+SAN_ExaReal;Prise de sang réalisé;Prélèvement sanguin
+SAN_HeFinDerRepa;Heure fin de repas;Prélèvement sanguin
+SAN_HeuPrel;Heure prélèvement sanguin;Prélèvement sanguin
+BAU_Gluc;Glycosurie_BU;Recueil urinaire
+BAU_Leuco;Leucocyturie_BU;Recueil urinaire
+BAU_Nitr;Nitriturie_BU;Recueil urinaire
+BAU_Prot;Protéinurie_BU;Recueil urinaire
+BAU_Sang;Hématurie_BU;Recueil urinaire
+BIR_Creat;Créatininurie;Recueil urinaire
+BIR_Gluc;Glycosurie;Recueil urinaire
+BIR_MicAlb;Albuminurie;Recueil urinaire
+BIR_Prot;Protéinurie;Recueil urinaire
+URI_ExaReal;Examen urines réalisé;Recueil urinaire
+URI_HeuRec;Heure recueil urinaire;Recueil urinaire
+age;Age;Sociale
+SAN_Regle;Régles;Sociale
+SOC_AgJrBil;Age;Sociale
+SOC_AidMedEta;Aide médicale état;Sociale
+SOC_BenCMU;Bénéficiaire CMU;Sociale
+SOC_BenRMIRSA;Bénéficiaire RMI/RSA;Sociale
+SOC_CES_Antenne;CES_Antenne;Sociale
+SOC_CES_NCes;NCES;Sociale
+SOC_Cin12Mois;Cinéma , spectacle au cours des 12 derniers mois;Sociale
+SOC_CMUBase;CMU de base;Sociale
+SOC_CMUComp;CMU complémentaire;Sociale
+SOC_Con6Mois;Contacts famille au cours des 6 derniers mois ;Sociale
+SOC_CouvCompConst;Couverture complémentaire;Sociale
+SOC_CouvCompDecl;Couverture complémentaire déclarée;Sociale
+SOC_JeuVoIns;Jeune en voie d'insertion;Sociale
+SOC_NConstances;Nconstances;Sociale
+SOC_PbAchatNourr;Problèmes d'argent pour acheter de la nourriture ;Sociale
+SOC_PrChar100;Prise en charge ALD 100%;Sociale
+SOC_Precar;Précarité;Sociale
+SOC_Proprio;Etes-vous propriétaire de votre logement ;Sociale
+SOC_QHerbDiff;Quelqu'un peut-il vous héberger en cas de difficulté ;Sociale
+SOC_QMatDiff;Quelqu'un peut-il vous aider matériellement en cas de difficulté ;Sociale
+SOC_RenTravSocial;encontrez-vous parfois un travailleur social  ;Sociale
+SOC_ScPrec;Score EPICES;Sociale
+SOC_Sex;Sexe;Sociale
+SOC_Spo12Mois;Sport au cours des 12 derniers mois ;Sociale
+SOC_Vac12Mois;Vacances au cours des 12 derniers mois;Sociale
+SOC_anne;l'année de l'examen;Sociale
+SOC_moisanne;l'année et le mois d'examen;Sociale
+SPI_CriAcc;Crtières acceptabilité;Spirométrie
+SPI_CriRepr;Critères reproductibilité;Spirométrie
+SPI_CVF1;CVF1;Spirométrie
+SPI_CVF2;CVF2;Spirométrie
+SPI_CVF3;CVF3;Spirométrie
+SPI_ExaReal;Spirométrie réalisé;Spirométrie
+SPI_VEMS1;VEMS1;Spirométrie
+SPI_VEMS2;VEMS2;Spirométrie
+SPI_VEMS3;VEMS3;Spirométrie
+bras;Bras de référence TA;Tension artérielle
+resp_proc;TA_Respect protocole ;Tension artérielle
+TAR_ExaReal;Tension artérielle réalisé;Tension artérielle
+TAR_ExaUni;tension artérielle unilatérale;Tension artérielle
+TAR_TenArtDiaBraRefDr;PAD droite ref;Tension artérielle
+TAR_TenArtDiaBraRefGa;PAD gauche ref;Tension artérielle
+TAR_TenArtDiaDr;PAD droite;Tension artérielle
+TAR_TenArtDiaGa;PAD gauche;Tension artérielle
+TAR_TenArtDiaOrt;PAD orthostatique;Tension artérielle
+TAR_TenArtOrt;Tension artérielle orthostatique;Tension artérielle
+TAR_TenArtSysBraRefDr;PAS droite ref;Tension artérielle
+TAR_TenArtSysBraRefGa;PAS gauche ref;Tension artérielle
+TAR_TenArtSysDr;PAS droite;Tension artérielle
+TAR_TenArtSysGa;PAS gauche;Tension artérielle
+TAR_TenArtSysOrt;PAS orthostatique;Tension artérielle
+TRA_TraHomeo;Traitements non remboursés (homéopathie….);Traitement
+class_rth;tour de tail;Biométrie
+RTH;Tail / Tail de hanchenche;Biométrie
+class_rth;class RTH;Biométrie
+VEMS; MAX VEMS;Spirométrie
+CVF;MAX CVF;Spirométrie
+Insuf_resp; vems/cvf*100;Spirométrie
+Class_Insuf_resp;class insuf respiratoire;Spirométrie
