@@ -8,7 +8,7 @@ library('reshape2')
 # load table "para"
 load('./paracl_aff_rom.RData')
 
-dic_nom_para=read.csv('dic_nom_para.csv',header = TRUE, sep=';')
+dic_nom_para=read.csv('dic_nom_para.csv',header = TRUE, sep=';', encoding = "UTF-8")
 dic_nom_para$nom =as.character(dic_nom_para$nom)
 dic_nom_para$variable =as.character(dic_nom_para$variable)
 names(para)
