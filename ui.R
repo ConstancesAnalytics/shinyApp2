@@ -19,20 +19,13 @@ shinyUI(pageWithSidebar(
 
     mainPanel(
         tabsetPanel(
-            tabPanel("Panel1",
+            tabPanel(
+                "Panel1",
                 fluidPage(
                     hr(),
-                    theme = "www/bootstrap.css",
-                    tags$head(
-                        tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.css"),
-                        tags$style(HTML("#dashboard{margin-top:200px;}"))
-                    ),
                     fluidRow(
                         column(6,
                             selectInput("CES", "CES", choices = c(levels(para_num$CES), "All"), selected = "All")
-                        ),
-                        column(6,
-                               selectInput("CES2", "CES2", choices = c(levels(para_num$CES), "All"), selected = "All")
                         )
                     ),
                     hr(),
@@ -40,17 +33,21 @@ shinyUI(pageWithSidebar(
                 )
             ),
 
-            tabPanel("Panel3",
-                     fluidPage(sidebarLayout(
-                       sidebarPanel(
-                         selectInput("variable02", "variable02", choices = c("CES"="par_ces","Antenne"="SOC_CES_Antenne"), selected = c("par_ces")),
-                         uiOutput("variable2"),
-                         width = 2
-                       ),
-                       mainPanel(verbatimTextOutput("text1"),
-                                 DT::dataTableOutput('summary'),
-                         DT::dataTableOutput('datatable3'))
-                     ))
+            tabPanel(
+                "Panel2",
+                fluidPage(
+                    hr(),
+                    fluidRow(
+                        column(6,
+                            selectInput("variable02", "CES/Antenne", choices = c("CES"="par_ces","Antenne"="SOC_CES_Antenne"), selected = c("par_ces"))
+                        ),
+                        column(6,
+                            uiOutput("variable2")
+                        )
+                    ),
+                    hr(),
+                    DT::dataTableOutput('summary'),
+                    DT::dataTableOutput('datatable3'))
             ),
             tabPanel("Panel4",
                      fluidPage(sidebarLayout(
