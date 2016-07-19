@@ -1,5 +1,5 @@
 library('shiny')
-library('ggplot2')  # for the diamonds dataset
+library('ggplot2')
 library('DT')
 library('dplyr')
 library('scales')
@@ -12,36 +12,54 @@ shinyServer(function(input, output) {
 
 
 para1 <- reactive({
-     para<-subset(para,input$dateRange[1]<= SOC_DatExam & input$dateRange[2]>= SOC_DatExam )
-      #para %>%filter(input$dateRange[1]<= SOC_DatExam, input$dateRange[2]>= SOC_DatExam )
-     nom_var0=subset(dic_nom_para, categorie==input$VAR)
-     vect_select0=c(nom_var0$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne', 'SOC_NConstances')
-     para20<-para %>%  select( which(names(para) %in% vect_select0))
+     para <- subset(para, (input$dateRange[1] <= SOC_DatExam) & (input$dateRange[2] >= SOC_DatExam))
+     nom_var0 <- subset(dic_nom_para, categorie==input$VAR)
+     vect_select0 <- c(nom_var0$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne', 'SOC_NConstances')
+     para20 <- para %>%  select(which(names(para) %in% vect_select0))
      para20
 
      })
 
 para_num1 <- reactive({
-    para_num0<-subset(para_num,input$dateRange[1]<= SOC_DatExam & input$dateRange[2]>= SOC_DatExam  )
-    nom_var1=subset(dic_nom_para, categorie==input$VAR)
-    vect_select=c(nom_var1$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex')
-    para_num20<-para_num0 %>% select( which(names(para_num) %in% vect_select)  )
+    para_num0 <- subset(para_num,input$dateRange[1]<= SOC_DatExam & input$dateRange[2]>= SOC_DatExam  )
+    nom_var1 <- subset(dic_nom_para, categorie==input$VAR)
+    vect_select <- c(nom_var1$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex')
+    para_num20 <- para_num0 %>% select( which(names(para_num) %in% vect_select)  )
     para_num20
     })
 
+# -------------- Panel 1
 
-  output$variable<- renderUI({
-    para<-para1()
-    selectInput("variable", "variable", choices = names(para), selected = names(para)[1])
-  })
 
+output$datatable1 <- DT::renderDataTable({
+    para_num <- para_num1()
+    ifelse(input$CES %in% levels(para_num$CESantenne),
+           para_num_CESfilt <- para_num%>%filter(CESantenne == input$CES)%>%select(-CESantenne,-SOC_DatExam,-par_ces ) ,
+           para_num_CESfilt <- para_num%>%select(-CESantenne,-SOC_DatExam,-par_ces))
+    data_sum <- as.data.frame(t(sapply(para_num_CESfilt, resumer)))
+    DT::datatable(
+        data_sum , options = list(
+            lengthMenu = list(c(5, 30, -1), c('5', '15', 'All')),
+            pageLength = 30
+        )
+    )
+})
+
+# -------------- Panel 2
 
   output$variable2 <- renderUI({
-    para_num<-para_num1()
-    all.list_num<-colnames(para_num)
-    dic_nom_para_rest<-dic_nom_para %>% filter(variable %in%all.list_num)
-    selectInput("variable2", "variable2", choices =dic_nom_para_rest$nom , selected = dic_nom_para_rest$nom[1])
+    para_num <- para_num1()
+    all.list_num <- colnames(para_num)
+    dic_nom_para_rest <- dic_nom_para %>% filter(variable %in%all.list_num)
+    selectInput("variable2", "variable2", choices = dic_nom_para_rest$nom , selected = dic_nom_para_rest$nom[1])
   })
+
+  output$datatable3  <- DT::renderDataTable({
+      para_num<-para_num1()
+      para<-para1()
+      var_tmp=dic_nom_para$variable[which(dic_nom_para$nom==input$variable2)]
+
+# -------------- Panel 2
 
   output$variable3 <- renderUI({
     para<-para1()
@@ -118,22 +136,7 @@ para_num1 <- reactive({
   })
 
 
-  output$datatable1  <- DT::renderDataTable({
-    para_num<-para_num1()
-    ifelse(input$CES %in% levels(para_num$CESantenne),
-      para_num_CESfilt <-  para_num%>%filter(CESantenne == input$CES)%>%select(-CESantenne,-SOC_DatExam,-par_ces ) ,
-      para_num_CESfilt <-  para_num%>%select(-CESantenne,-SOC_DatExam,-par_ces))
-    data_sum <- as.data.frame(t(sapply(para_num_CESfilt, resumer)))
-    DT::datatable(
-      data_sum , options = list(
-        lengthMenu = list(c(5, 30, -1), c('5', '15', 'All')),
-        pageLength = 30
-      )
-    )
 
-   # input$dateRange[1]
-  #  input$dateRange[2]
-  })
 
 
   output$text1 <- renderText({
@@ -161,10 +164,7 @@ para_num1 <- reactive({
   })
 
 
-  output$datatable3  <- DT::renderDataTable({
-    para_num<-para_num1()
-    para<-para1()
-    var_tmp=dic_nom_para$variable[which(dic_nom_para$nom==input$variable2)]
+
 
     data_sum2 <- do.call(rbind, tapply(para_num[,var_tmp], para[,input$variable02], resumer_borne, vect = get(var_tmp, dict_para)))
     DT::datatable(

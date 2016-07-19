@@ -4,7 +4,6 @@ library('plotly')
 
 
 shinyUI(pageWithSidebar(
-  # Application title
 
     headerPanel("Données paracliniques"),
 
@@ -13,8 +12,7 @@ shinyUI(pageWithSidebar(
                         label = 'période',
                         start = '2012-02-09',
                         end = Sys.Date() + 2),
-        selectInput("VAR", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3] ),
-        width = 2
+        width = 3
     ),
 
     mainPanel(
@@ -25,7 +23,10 @@ shinyUI(pageWithSidebar(
                     hr(),
                     fluidRow(
                         column(6,
-                            selectInput("CES", "CES", choices = c(levels(para_num$CES), "All"), selected = "All")
+                               selectInput("CES", "CES", choices = c(levels(para_num$CES), "All"), selected = "All")
+                        ),
+                        column(6,
+                               selectInput("VAR", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3] )
                         )
                     ),
                     hr(),
@@ -33,15 +34,19 @@ shinyUI(pageWithSidebar(
                 )
             ),
 
+
             tabPanel(
                 "Panel2",
                 fluidPage(
                     hr(),
                     fluidRow(
-                        column(6,
+                        column(4,
                             selectInput("variable02", "CES/Antenne", choices = c("CES"="par_ces","Antenne"="SOC_CES_Antenne"), selected = c("par_ces"))
                         ),
-                        column(6,
+                        column(4,
+                               selectInput("VAR", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3] )
+                        ),
+                        column(4,
                             uiOutput("variable2")
                         )
                     ),
@@ -49,6 +54,8 @@ shinyUI(pageWithSidebar(
                     DT::dataTableOutput('summary'),
                     DT::dataTableOutput('datatable3'))
             ),
+
+
             tabPanel("Panel4",
                      fluidPage(sidebarLayout(
                        sidebarPanel(
