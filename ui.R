@@ -26,7 +26,7 @@ shinyUI(pageWithSidebar(
                                selectInput("CES", "CES", choices = c(levels(para_num$CES), "All"), selected = "All")
                         ),
                         column(6,
-                               selectInput("VAR", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3] )
+                               selectInput("panel1var1", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3] )
                         )
                     ),
                     hr(),

@@ -10,6 +10,16 @@ library('plotly')
 
 shinyServer(function(input, output) {
 
+para_date <- reactive({
+    out <- subset(para, (input$dateRange[1] <= SOC_DatExam) & (input$dateRange[2] >= SOC_DatExam))
+    out
+})
+
+para_num_date <- reactive({
+    out <- subset(para_num, (input$dateRange[1] <= SOC_DatExam) & (input$dateRange[2] >= SOC_DatExam))
+    out
+})
+
 
 para1 <- reactive({
      para <- subset(para, (input$dateRange[1] <= SOC_DatExam) & (input$dateRange[2] >= SOC_DatExam))
@@ -17,8 +27,7 @@ para1 <- reactive({
      vect_select0 <- c(nom_var0$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne', 'SOC_NConstances')
      para20 <- para %>%  select(which(names(para) %in% vect_select0))
      para20
-
-     })
+})
 
 para_num1 <- reactive({
     para_num0 <- subset(para_num,input$dateRange[1]<= SOC_DatExam & input$dateRange[2]>= SOC_DatExam  )
@@ -30,15 +39,21 @@ para_num1 <- reactive({
 
 # -------------- Panel 1
 
+para1 <- reactive({
+    nom_var <- subset(dic_nom_para, categorie==input$panel1var1)
+    vect_select <- c(nom_var$variable,'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex')
+    out <- para_num_date() %>% select( which(names(para_num) %in% vect_select)  )
+    out
+})
 
 output$datatable1 <- DT::renderDataTable({
-    para_num <- para_num1()
-    ifelse(input$CES %in% levels(para_num$CESantenne),
-           para_num_CESfilt <- para_num%>%filter(CESantenne == input$CES)%>%select(-CESantenne,-SOC_DatExam,-par_ces ) ,
-           para_num_CESfilt <- para_num%>%select(-CESantenne,-SOC_DatExam,-par_ces))
-    data_sum <- as.data.frame(t(sapply(para_num_CESfilt, resumer)))
+    dttbl<- para1()
+    ifelse(input$CES %in% levels(dttbl$CESantenne),
+           dttbl_CESfilt <- dttbl %>% filter(CESantenne == input$CES) %>% select(-CESantenne,-SOC_DatExam,-par_ces ) ,
+           dttbl_CESfilt <- dttbl %>% select(-CESantenne,-SOC_DatExam,-par_ces))
+    dttbl_sum <- as.data.frame(t(sapply(dttbl_CESfilt, resumer)))
     DT::datatable(
-        data_sum , options = list(
+        dttbl_sum , options = list(
             lengthMenu = list(c(5, 30, -1), c('5', '15', 'All')),
             pageLength = 30
         )
