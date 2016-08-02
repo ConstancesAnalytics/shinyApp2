@@ -1,4 +1,3 @@
-
 library('shiny')
 library('ggplot2')  # for the diamonds dataset
 library('DT')
@@ -6,18 +5,132 @@ library('dplyr')
 library('reshape2')
 source('./function.R')
 
-# ----------------- load files and dictionnary
+# ----------------- load para file
 
 load('./paracl_aff_rom.RData')
+colnames(para) <- gsub("PARACL_","", colnames(para))
+
+# ----------------- load dictionnary
 dic_nom_para <- read.csv('dic_nom_para.csv',header = TRUE, sep=';', encoding = "UTF-8")
 dic_nom_para$nom <- as.character(dic_nom_para$nom)
 dic_nom_para$variable <- as.character(dic_nom_para$variable)
-colnames(para) <- gsub("PARACL_","", colnames(para))
+
+
+
+# ----------------- define bounds paraclinique
+
+bounds_para <- list(POI_MesPoi =c( 40,200 ),
+                POI_ExaReal =c( 1,2 ),
+                HAU_MesTail =c( 40 ,200 ),
+                HAU_ExaReal =c( 1 ,2 ),
+                TAI_MesToTai=c(60,150),
+                TAI_ExaReal=c(1,2),
+                HAN_MesToHan=c(60,150),
+                HAN_ExaReal=c(1,2),
+                OMB_MesPeri=c(60,150),
+                OMB_ExaReal=c(1,2),
+                SPI_VEMS1 =c( 1,7 ),
+                SPI_VEMS2 =c( 1,7 ),
+                SPI_VEMS3 =c( 1,7 ),
+                SPI_CVF1 =c( 1,7 ),
+                SPI_CVF2 =c( 1,7 ),
+                SPI_CVF3 =c( 1,7 ),
+                TAR_TenArtSysDr =c( 80 ,250 ),
+                TAR_TenArtSysGa =c( 80 ,250 ),
+                TAR_TenArtDiaDr =c( 30 ,120 ),
+                TAR_TenArtDiaGa =c( 30 ,120 ),
+                TAR_TenArtDiaBraRefDr=c( 30 ,120 ),
+                TAR_TenArtDiaBraRefGa=c( 30 ,120 ),
+                TAR_TenArtSysBraRefGa=c(80,250),
+                TAR_TenArtSysBraRefDr=c(80,250),
+                TAR_TenArtSysOrt=c(1,2),
+                TAR_TenArtSysOrt=c(80,250),
+                TAR_TenArtDiaOrt=c( 30 ,120 ),
+                VDL_OeDrSaCorr =c(0,12 ),
+                VDL_OeDrAvCorr =c(0,12 ),
+                VDL_OeGaAvCorr =c(0,12 ),
+                VDL_OeGaSaCorr =c(0,12 ),
+                VDL_BiAvCorr =c(0,12 ),
+                VDL_BiSaCorr =c(0,12 ),
+                VDL_CeProAmbMono =c(1,2),
+                VDL_ExaReal =c(1,2 ),
+                BIO_Glyc =c( 2.5 ,20 ),
+                BIO_Crea =c(10 ,2000 ),
+                BIO_Gam =c( 2 ,300 ),
+                BIO_Alat =c( 2 ,200 ),
+                BIO_ChoTot =c( 1.5,15  ),
+                BIO_ChoHDL =c( 0.25 ,3.5 ),
+                BIO_Trig =c( 0.1 ,30 ),
+                HEM_GloBla =c( 1.0 ,50 ),
+                HEM_GloRou =c( 2 ,7 ),
+                HEM_VolGlobMoy =c( 60 ,120 ),
+                HEM_Hemato=c(0.25,0.7),
+                HEM_Hemo =c( 50 ,200 ),
+                HEM_Plaq =c( 50 ,700 ),
+                HEM_NeuPhi =c( 15 ,90 ),
+                HEM_EosiPhi =c(0.5,20 ),
+                HEM_BasoPhi =c(0.5,10 ),
+                HEM_Lympho =c( 5,80 ),
+                HEM_Monocy =c( 1,30 ),
+                BIR_MicAlb =c( 5 ,500 ),
+                BIR_Gluc =c( 0 ,30 ),
+                BIR_Prot =c( 0.05 ,5 ),
+                BIR_Creat =c( 2 ,30 ),
+                VDP_OeDrSaCorr = c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
+                VDP_OeDrAvCorr = c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
+                VDP_OeGaAvCorr = c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
+                VDP_OeGaSaCorr = c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
+                VDP_BiAvCorr= c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
+                VDP_BiSaCorr= c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
+                VDP_ExaReal =c(1,2 ),
+                VDP_CeProAmbMono=c(1,2 ),
+                AUD_ExaReal=c(1,2 ),
+                AUD_AuDr500 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
+                AUD_AuDr1000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
+                AUD_AuDr2000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
+                AUD_AuDr4000 =c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
+                AUD_AuDr8000 =c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
+                AUD_AuGa500 =c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
+                AUD_AuGa1000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
+                AUD_AuGa2000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
+                AUD_AuGa4000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90),
+                AUD_AuGa8000 =c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
+                ECG_ExaReal=c(1,2 ),
+                ldl=c(0,11),
+                SAN_DiffPrel=c(1,2),
+                SAN_ExaReal=c(1,2),
+                URI_ExaReal=c(1,2),
+                SAN_Regle=c(1,2),
+                SOC_AidMedEta=c(1,2),
+                SOC_BenCMU=c(1,2),
+                SOC_BenRMIRSA=c(1,2),
+                SOC_Cin12Mois=c(1,2),
+                SOC_CMUBase=c(1,2),
+                SOC_CMUComp=c(1,2),
+                SOC_Con6Mois=c(1,2),
+                SOC_CouvCompConst=c(1,2),
+                SOC_CouvCompDecl=c(1,2),
+                SOC_JeuVoIns=c(1,2),
+                SOC_PbAchatNourr=c(1,2),
+                SOC_PrChar100=c(1,2),
+                SOC_Precar=c(1,2),
+                SOC_Proprio=c(1,2),
+                SOC_QHerbDiff=c(1,2),
+                SOC_QMatDiff=c(1,2),
+                SOC_RenTravSocial=c(1,2),
+                SOC_ScPrec=c(1,2),
+                SOC_Spo12Mois=c(1,2),
+                SOC_Vac12Mois=c(1,2),
+                SPI_ExaReal=c(1,2),
+                SPI_CriRepr=c(1,2),
+                SPI_CriAcc=c(1,2),
+                TAR_ExaUni=c(1,2),
+                TRA_TraHomeo=c(1,2))
 
 
 # ----------------- select variables
 
-para <- select(para,
+para <- select(para, ### ELIE : select variables from dictionnary
                VDL_BiAvCorr,
                VDL_BiSaCorr,
                VDL_CeProAmbMono,
@@ -216,7 +329,7 @@ levels(para$SOC_Sex)<-c('M','F')
 
 para$RTH=round(para$TAI_MesToTai/para$HAN_MesToHan,2)
 
-para$class_rth=as.factor(ifelse( ((para$SOC_Sex==2 & para$RTH <=0.8 ) | (para$SOC_Sex==1 & para$RTH <=0.95 )),'Normal', 'Obésité abdominale'))
+para$class_rth=as.factor(ifelse( ((para$SOC_Sex==2 & para$RTH <=0.8 ) | (para$SOC_Sex==1 & para$RTH <=0.95 )),'Normal', 'Ob?sit? abdominale'))
 
 
 para$VEMS =apply(para[,c('SPI_VEMS1','SPI_VEMS2','SPI_VEMS3')],1, max, na.rm=FALSE)
@@ -245,36 +358,45 @@ para$SOC_DatExam <- as.Date(para$SOC_DatExam, "%Y-%m-%d")
 para$SOC_anne <- as.factor(format(para$SOC_DatExam, "%Y"))
 para$SOC_moisanne <- as.factor(format(para$SOC_DatExam, "%m%y"))
 
-#Calcul de l'age
+
+# ----------------- Calcul de l'age
+
 para$age=as.numeric(((para$SOC_DatExam-para$SOC_DNaissance )/365.5))
 
 para$clas_age3=cut(floor(para$age), breaks = c(18,30,60,100), right = FALSE)
 levels(para$clas_age3) <- c('18-29 ans','30-59 ans', '60 ans et plus')
 
-
-
-
-
 para$clas_age5=cut(floor(para$age), breaks = c(18,35,45,55,65,74), right = FALSE,include.lowest = TRUE)
 levels(para$clas_age5) <- c('18-34 ans','35-44 ans','45-54 ans', '55-64 ans','65-74 ans')
-
 
 para$clas_age45an <- cut(floor(para$age), breaks = c(18,45,100), right = FALSE)
 levels(para$clas_age45an) <- c('18-45 ans','45 ans et plus')
 
 
+
 # ----------------- split numeric variables from others
+
 para_num  <- para[ , sapply(para,  is.numeric)]
-para_num$SOC_DatExam<- para$SOC_DatExam
-para_num$SOC_moisanne<-para$SOC_moisanne
-para_num$SOC_anne<- para$SOC_anne
+para_num$SOC_DatExam <- para$SOC_DatExam
+para_num$SOC_moisanne <- para$SOC_moisanne
+para_num$SOC_anne <- para$SOC_anne
 para_num$CESantenne <- para$SOC_CES_Antenne
 
 
+# ----------------- create clean para table (by excluding outliers)
 
-
-
-
-
-
-
+para_bounds <- para
+for (col in names(bounds_para)) {
+    vect <- bounds_para[[col]]
+    if(length(vect) == 2) {
+        if(identical(vect, c(1,2))) {
+            para_bounds[[col]][!(para_bounds[[col]] %in% vect)] <- NA
+        }
+        else {
+            para_bounds[[col]][(para_bounds[[col]] < vect[1]) | (para_bounds[[col]] > vect[2])] <- NA
+        }
+    }
+    else {
+        para_bounds[[col]][!(para_bounds[[col]] %in% vect)] <- NA
+    }
+}

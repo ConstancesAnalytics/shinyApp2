@@ -14,7 +14,7 @@ resumer <- function (x) {
   rownames(h) <- name
   return(as.data.frame(h))
 }
-resumer_sans_nom <- function (x) {
+resumer_sans_nom <- function (x, var = "") {
   N=length(x)
   Moyenne=round(mean(x,na.rm=TRUE),2)
   ecart_type=round(sd(x,na.rm=TRUE),2)
@@ -26,7 +26,7 @@ resumer_sans_nom <- function (x) {
   max=max(x,na.rm=TRUE)
   Na=table(is.na(x))[2]
   h=as.data.frame(cbind(N,Moyenne,ecart_type,Variance, min, q25, q50,q75, max,  Na))
-  rownames(h) <- 'VAR'
+  rownames(h) <- var
   return(as.data.frame(h))
 }
 
@@ -82,45 +82,56 @@ resumer_bis<-function (x, inf=NULL, sup=NULL, vect=NULL) {
   return(h)
 }
 
+# -------------------------------------------------------------- TDB
 
+TDB <- function(tbl,var, sexe, c_age) {
 
-TDB<-function(tbl,var, sexe, c_age) {
-  tbl<-filter(tbl,!is.na(tbl[[var]]), !is.na(tbl[[c_age]]))
-  tbl[[var]] <- as.factor(gsub("^$", "VIDE", tbl[[var]]))
-  tbl[[var]]<-droplevels(tbl[[var]])
-  tbl_freq_s_a<-dcast(tbl, tbl[[sexe]] + tbl[[c_age]] ~ tbl[[var]], length )[,-c(1,2)]
-  tbl_freq_a<-dcast(tbl,  tbl[[c_age]] ~ tbl[[var]],length)[,-c(1)]
-  tbl_freq_s_e<-rbind(dcast(tbl,  tbl[[sexe]] ~ tbl[[var]],length)[,-c(1)], dcast(tbl,  . ~ tbl[[var]], length)[,-c(1)])
+    # remove rows with empty var or age cat
+    tbl <- filter(tbl, !is.na(tbl[[var]]), !is.na(tbl[[c_age]]))
 
-  tbl_pr_s_a<-round(tbl_freq_s_a/apply(tbl_freq_s_a,1,sum,na.rm=TRUE)*100,2)
-  tbl_pr_a<-round(tbl_freq_a/apply(tbl_freq_a,1,sum,na.rm=TRUE)*100,2)
-  tbl_pr_s_e<-round(tbl_freq_s_e/apply(tbl_freq_s_e,1,sum,na.rm=TRUE)*100,2)
+    #tbl[[var]] <- as.factor(gsub("^$", "VIDE", tbl[[var]]))  ## on ne pourrait pas mettre tbl[[var = ""]] <- "VIDE"
 
-  nClass<-length(levels(tbl[[var]]))
-  vect_c<-NULL
-  for (i in 1:nClass)
-  {vect_c<-append(vect_c,c(i,nClass+i))
-  vect_c }
+    # remove unused levels
+    tbl[[var]] <- droplevels(tbl[[var]])
 
-  tbl_M_F <-cbind(tbl_freq_s_a, tbl_pr_s_a)[, vect_c]
-  tbl_E   <-cbind(tbl_freq_a, tbl_pr_a)[, vect_c]
-  tbl_A   <-cbind(tbl_freq_s_e, tbl_pr_s_e)[, vect_c]
+    # create tables with absolute numbers
+    tbl_freq_s_a <- dcast(tbl, tbl[[sexe]] + tbl[[c_age]] ~ tbl[[var]], length )[,-c(1,2)]
+    tbl_freq_a <- dcast(tbl,  tbl[[c_age]] ~ tbl[[var]],length)[,-c(1)]
+    tbl_freq_s_e <- rbind(dcast(tbl,  tbl[[sexe]] ~ tbl[[var]],length)[,-c(1)], dcast(tbl,  . ~ tbl[[var]], length)[,-c(1)])
 
-  nClass_age<-length(levels(tbl[[c_age]]))
-  h<-1:(3*nClass_age)
-  vect_a <- c(rbind(matrix(h, nrow = nClass_age), (3*nClass_age+1):(3*nClass_age+3)))
+    # create tables with frequencies
+    tbl_pr_s_a <- round(tbl_freq_s_a/apply(tbl_freq_s_a,1,sum,na.rm=TRUE)*100,2)
+    tbl_pr_a <- round(tbl_freq_a/apply(tbl_freq_a,1,sum,na.rm=TRUE)*100,2)
+    tbl_pr_s_e <- round(tbl_freq_s_e/apply(tbl_freq_s_e,1,sum,na.rm=TRUE)*100,2)
 
-  tdb<-rbind(tbl_M_F,tbl_E,tbl_A)[vect_a,]
+    # create a vector with alternate positions for absolute values and %
+    nClass <- length(levels(tbl[[var]]))
+    vect_c <- NULL
+    for (i in 1:nClass)
+    {vect_c <- append(vect_c,c(i,nClass+i))
+    vect_c }
 
-  tdb
+    # create combined tables
+    tbl_M_F <- cbind(tbl_freq_s_a, tbl_pr_s_a)[, vect_c]
+    tbl_E   <- cbind(tbl_freq_a, tbl_pr_a)[, vect_c]
+    tbl_A   <- cbind(tbl_freq_s_e, tbl_pr_s_e)[, vect_c]
+
+    # create a vector with alternate positions for age classes
+    nClass_age <- length(levels(tbl[[c_age]]))
+    h <- 1:(3*nClass_age)
+    vect_a <- c(rbind(matrix(h, nrow = nClass_age), (3*nClass_age+1):(3*nClass_age+3)))
+
+    # create combined table
+    tdb <- rbind(tbl_M_F,tbl_E,tbl_A)[vect_a,]
+    tdb
 }
 
-tbl_char<- function(x,label){
-
-  y=sapply(x, function(x) iconv(x,  "UTF-8", "latin1"))
-  ny=nrow(y)
-  cvide = rep('', length(label))
-  rvide = rep('', ncol(x)+1)
+tbl_char <- function(x,label){
+# format the table
+  y <- sapply(x, function(x) iconv(x,  "UTF-8", "latin1"))
+  ny <- nrow(y)
+  cvide <- rep('', length(label))
+  rvide <- rep('', ncol(x)+1)
 
   k_h  <- cbind(cvide, label, y[1:(ny/3),])
   k1_h <- rbind(c('Homme', rvide), k_h)
@@ -133,127 +144,16 @@ tbl_char<- function(x,label){
 
   all_ch <- rbind(k1_h, k1_f, k1_e)
 
+  colnames(all_ch)[1] <- "sexe"
+  colnames(all_ch)[2] <- "age"
+  for (i in 2:(length(colnames(all_ch))/2)) {
+      colnames(all_ch)[2*i] <- "%"
+  }
+
   return(all_ch)
 }
 
-
-
-
-
-
-
-# define dict paraclinique
-dict_para<-list(POI_MesPoi =c( 40,200 ),
-                POI_ExaReal =c( 1,2 ),
-                HAU_MesTail =c( 40 ,200 ),
-                HAU_ExaReal =c( 1 ,2 ),
-                TAI_MesToTai=c(60,150),
-                TAI_ExaReal=c(1,2),
-                HAN_MesToHan=c(60,150),
-                HAN_ExaReal=c(1,2),
-                OMB_MesPeri=c(60,150),
-                OMB_ExaReal=c(1,2),
-                SPI_VEMS1 =c( 1,7 ),
-                SPI_VEMS2 =c( 1,7 ),
-                SPI_VEMS3 =c( 1,7 ),
-                SPI_CVF1 =c( 1,7 ),
-                SPI_CVF2 =c( 1,7 ),
-                SPI_CVF3 =c( 1,7 ),
-                TAR_TenArtSysDr =c( 80 ,250 ),
-                TAR_TenArtSysGa =c( 80 ,250 ),
-                TAR_TenArtDiaDr =c( 30 ,120 ),
-                TAR_TenArtDiaGa =c( 30 ,120 ),
-                TAR_TenArtDiaBraRefDr=c( 30 ,120 ),
-                TAR_TenArtDiaBraRefGa=c( 30 ,120 ),
-                TAR_TenArtSysBraRefGa=c(80,250),
-                TAR_TenArtSysBraRefDr=c(80,250),
-                TAR_TenArtSysOrt=c(1,2),
-                TAR_TenArtSysOrt=c(80,250),
-                TAR_TenArtDiaOrt=c( 30 ,120 ),
-                VDL_OeDrSaCorr =c(0,12 ),
-                VDL_OeDrAvCorr =c(0,12 ),
-                VDL_OeGaAvCorr =c(0,12 ),
-                VDL_OeGaSaCorr =c(0,12 ),
-                VDL_BiAvCorr =c(0,12 ),
-                VDL_BiSaCorr =c(0,12 ),
-                VDL_CeProAmbMono =c(1,2),
-                VDL_ExaReal =c(1,2 ),
-                BIO_Glyc =c( 2.5 ,20 ),
-                BIO_Crea =c(10 ,2000 ),
-                BIO_Gam =c( 2 ,300 ),
-                BIO_Alat =c( 2 ,200 ),
-                BIO_ChoTot =c( 1.5,15  ),
-                BIO_ChoHDL =c( 0.25 ,3.5 ),
-                BIO_Trig =c( 0.1 ,30 ),
-                HEM_GloBla =c( 1.0 ,50 ),
-                HEM_GloRou =c( 2 ,7 ),
-                HEM_VolGlobMoy =c( 60 ,120 ),
-                HEM_Hemato=c(0.25,0.7),
-                HEM_Hemo =c( 50 ,200 ),
-                HEM_Plaq =c( 50 ,700 ),
-                HEM_NeuPhi =c( 15 ,90 ),
-                HEM_EosiPhi =c(0.5,20 ),
-                HEM_BasoPhi =c(0.5,10 ),
-                HEM_Lympho =c( 5,80 ),
-                HEM_Monocy =c( 1,30 ),
-                BIR_MicAlb =c( 5 ,500 ),
-                BIR_Gluc =c( 0 ,30 ),
-                BIR_Prot =c( 0.05 ,5 ),
-                BIR_Creat =c( 2 ,30 ),
-                VDP_OeDrSaCorr = c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
-                VDP_OeDrAvCorr = c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
-                VDP_OeGaAvCorr = c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
-                VDP_OeGaSaCorr = c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
-                VDP_BiAvCorr= c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
-                VDP_BiSaCorr= c(1.5,2,3,4,5,6,7,8,10,14,20,28 ),
-                VDP_ExaReal =c(1,2 ),
-                VDP_CeProAmbMono=c(1,2 ),
-                AUD_ExaReal=c(1,2 ),
-                AUD_AuDr500 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
-                AUD_AuDr1000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
-                AUD_AuDr2000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
-                AUD_AuDr4000 =c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
-                AUD_AuDr8000 =c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
-                AUD_AuGa500 =c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
-                AUD_AuGa1000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
-                AUD_AuGa2000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
-                AUD_AuGa4000 = c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90),
-                AUD_AuGa8000 =c(-10 , -5 , 0 , 5 , 10 , 15, 20 , 25 , 30 , 35, 40 , 45, 50 , 55 , 60, 65 , 70, 75 , 80 , 85, 90 ),
-                ECG_ExaReal=c(1,2 ),
-                ldl=c(0,11),
-                SAN_DiffPrel=c(1,2),
-                SAN_ExaReal=c(1,2),
-                URI_ExaReal=c(1,2),
-                SAN_Regle=c(1,2),
-                SOC_AidMedEta=c(1,2),
-                SOC_BenCMU=c(1,2),
-                SOC_BenRMIRSA=c(1,2),
-                SOC_Cin12Mois=c(1,2),
-                SOC_CMUBase=c(1,2),
-                SOC_CMUComp=c(1,2),
-                SOC_Con6Mois=c(1,2),
-                SOC_CouvCompConst=c(1,2),
-                SOC_CouvCompDecl=c(1,2),
-                SOC_JeuVoIns=c(1,2),
-                SOC_PbAchatNourr=c(1,2),
-                SOC_PrChar100=c(1,2),
-                SOC_Precar=c(1,2),
-                SOC_Proprio=c(1,2),
-                SOC_QHerbDiff=c(1,2),
-                SOC_QMatDiff=c(1,2),
-                SOC_RenTravSocial=c(1,2),
-                SOC_ScPrec=c(1,2),
-                SOC_Spo12Mois=c(1,2),
-                SOC_Vac12Mois=c(1,2),
-                SPI_ExaReal=c(1,2),
-                SPI_CriRepr=c(1,2),
-                SPI_CriAcc=c(1,2),
-                TAR_ExaUni=c(1,2),
-                TRA_TraHomeo=c(1,2))
-
-
-
-
+# --------------------------------------------------------------
 
 
 graph<-function(x){
