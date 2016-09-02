@@ -7,7 +7,7 @@ source('./function.R')
 
 # ----------------- load para file
 
-load('./paracl_aff_rom.RData')
+load('./paracl_romain.RData')
 colnames(para) <- gsub("PARACL_","", colnames(para))
 
 # ----------------- load dictionnary
@@ -400,3 +400,4 @@ for (col in names(bounds_para)) {
         para_bounds[[col]][!(para_bounds[[col]] %in% vect)] <- NA
     }
 }
+
