@@ -1,5 +1,3 @@
-setwd("~/gir_r_app/shinyApp2")
-
 load('./para_elie.RData')
 para_cols <- gsub("PARACL_","", colnames(para))
 colnames(para) <- para_cols

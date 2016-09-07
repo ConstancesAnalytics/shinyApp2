@@ -61,7 +61,8 @@ output$datatable1 <- DT::renderDataTable({
     DT::datatable(
         dttbl_sum , options = list(
             lengthMenu = list(c(5, 30, -1), c('5', '15', 'All')),
-            pageLength = 30
+            pageLength = 30,
+            paging  = FALSE
         )
     )
 })
