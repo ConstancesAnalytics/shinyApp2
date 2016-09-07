@@ -1,8 +1,5 @@
-#modif Elie2
 library(shiny)
 library('plotly')
-
-# ajout romain
 
 shinyUI(pageWithSidebar(
 
