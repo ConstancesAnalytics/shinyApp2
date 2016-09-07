@@ -39,7 +39,7 @@ shinyUI(pageWithSidebar(
                     hr(),
                     fluidRow(
                         column(4,
-                            selectInput("panel2var1", "CES/Antenne", choices = c("CES"="par_ces","Antenne"="SOC_CES_Antenne"), selected = c("par_ces"))
+                            selectInput("panel2var1", "CES/Antenne", choices = c("CES"="par_ces","Antenne"="CESantenne"), selected = c("par_ces"))
                         ),
                         column(4,
                                selectInput("panel2var2", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3] )
