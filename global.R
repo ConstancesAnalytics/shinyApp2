@@ -276,7 +276,8 @@ para <- select(para, ### ELIE : select variables from dictionnary
                SOC_CES_Appli,
                SOC_HomeTime,
                SOC_DNaissance,
-               SOC_DatExam)
+               SOC_DatExam,
+               ldl)
 
 
 
