@@ -9,8 +9,6 @@ source('./function.R')
 
 load('./paracl_romain.RData')
 
-#colnames(para) <- gsub("PARACL_","", colnames(para))
-
 # ----------------- load dictionnary
 dic_nom_para <- read.csv('dic_nom_para.csv',header = TRUE, sep=';', encoding = "UTF-8")
 dic_nom_para$nom <- as.character(dic_nom_para$nom)
@@ -329,19 +327,19 @@ para_num$CESantenne <- para$SOC_CES_Antenne
 
 # ----------------- create clean para table (by excluding outliers)
 
-#para_bounds <- para
-#for (col in names(bounds_para)) {
-#    vect <- bounds_para[[col]]
-#    if(length(vect) == 2) {
-#        if(identical(vect, c(1,2))) {
-#            para_bounds[[col]][!(para_bounds[[col]] %in% vect)] <- NA
-#        }
-#        else {
-#            para_bounds[[col]][(para_bounds[[col]] < vect[1]) | (para_bounds[[col]] > vect[2])] <- NA
-#        }
-#    }
-#    else {
-#        para_bounds[[col]][!(para_bounds[[col]] %in% vect)] <- NA
-#    }
-#}
+para_bounds <- para
+for (col in names(bounds_para)) {
+   vect <- bounds_para[[col]]
+   if(length(vect) == 2) {
+       if(identical(vect, c(1,2))) {
+           para_bounds[[col]][!(para_bounds[[col]] %in% vect)] <- NA
+       }
+       else {
+           para_bounds[[col]][(para_bounds[[col]] < vect[1]) | (para_bounds[[col]] > vect[2])] <- NA
+       }
+   }
+   else {
+       para_bounds[[col]][!(para_bounds[[col]] %in% vect)] <- NA
+   }
+}
 

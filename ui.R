@@ -16,7 +16,7 @@ shinyUI(pageWithSidebar(
     mainPanel(
         tabsetPanel(
             tabPanel(
-                "Panel1",
+                "Summary CES 1",
                 fluidPage(
                     hr(),
                     fluidRow(
@@ -34,7 +34,7 @@ shinyUI(pageWithSidebar(
 
 
             tabPanel(
-                "Panel2",
+                "Summary CES 2",
                 fluidPage(
                     hr(),
                     fluidRow(
