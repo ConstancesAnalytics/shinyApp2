@@ -276,7 +276,8 @@ para <- select(para, ### ELIE : select variables from dictionnary
                SOC_CES_Appli,
                SOC_HomeTime,
                SOC_DNaissance,
-               SOC_DatExam)
+               SOC_DatExam,
+               ldl)
 
 
 
@@ -342,4 +343,3 @@ for (col in names(bounds_para)) {
        para_bounds[[col]][!(para_bounds[[col]] %in% vect)] <- NA
    }
 }
-
