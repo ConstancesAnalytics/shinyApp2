@@ -52,9 +52,11 @@ para1_num <- reactive({
 
 output$datatable1 <- DT::renderDataTable({
     dttbl <- para1_num()
+
     ifelse(input$CES %in% levels(dttbl$CESantenne),
            dttbl_CESfilt <- dttbl %>% filter(CESantenne == input$CES) %>% select(-CESantenne,-SOC_DatExam,-par_ces ) ,
            dttbl_CESfilt <- dttbl %>% select(-CESantenne,-SOC_DatExam,-par_ces))
+
     temp_df <- data.frame(var_names = colnames(dttbl_CESfilt)) %>% left_join(dic_nom_para, by = c("var_names" = "variable"))    ## on peut mettre ça
     colnames(dttbl_CESfilt) <- temp_df$nom                                                                                      ## dans global
     dttbl_sum <- as.data.frame(t(sapply(dttbl_CESfilt, resumer)))
@@ -132,7 +134,12 @@ output$panel4var4 <- renderUI({
 })
 
 output$datatable4  <- DT::renderDataTable({
-    para_tmp <- para4()
+
+    ifelse(input$panel4var1 %in% levels(para4()$CESantenne),
+           para_tmp <- para4() %>% filter(CESantenne == input$panel4var1) %>% select(-CESantenne,-SOC_DatExam,-par_ces ) ,
+           para_tmp <- para4() )
+
+    #para_tmp <- para4() %>% filter(CESantenne == input$panel4var1)
     var_tmp <- dic_nom_para$variable[which(dic_nom_para$nom==input$panel4var4)]
     if (is.numeric(para_tmp[[var_tmp]])){
         min_var <- min(para_tmp[[var_tmp]], na.rm = TRUE)
