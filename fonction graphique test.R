@@ -160,18 +160,24 @@ ggplot(Data,aes(x = ind, y = value,fill = variable)) +
     geom_bar(aes(fill = variable),stat="identity",width=0.4) +
     geom_text(aes(label = ifelse(value> 3, value,' '), y =pos), size = 4,colour="#FFFFFF")+
     scale_fill_manual(values=c("#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e"))+
-    # annotate("text", x = 9, y =-30, label = "Hommes") +
-    # annotate("text", x = 9, y =-10, label = "18-29 ans") +
-    # annotate("text", x = 8, y =-10, label = "30-59 ans") +
-    # annotate("text", x = 7, y =-10, label = "60 ans et plus") +
-    # annotate("text", x = 6, y =-30, label = "Femmes") +
-    # annotate("text", x = 6, y =-10, label = "18-29 ans") +
-    # annotate("text", x = 5, y =-10, label = "30-59 ans") +
-    # annotate("text", x = 4, y =-10, label = "60 ans et plus") +
-    # annotate("text", x = 3, y =-30, label = "Ensemble") +
-    # annotate("text", x = 3, y =-10, label = "18-29 ans") +
-    # annotate("text", x = 2, y =-10, label = "30-59 ans") +
-    # annotate("text", x = 1, y =-10, label = "60 ans et plus") +
+     annotate("text", x = 15, y =-30, label = "Hommes") +
+     annotate("text", x = 15, y =-10, label = "18-34 ans") +
+     annotate("text", x = 14, y =-10, label = "35-44 ans") +
+     annotate("text", x = 13, y =-10, label = "45-54 ans") +
+     annotate("text", x = 12, y =-10, label = "55-64 ans") +
+     annotate("text", x = 11, y =-10, label = "64 ans et plus") +
+     annotate("text", x = 10, y =-30, label = "Femmes") +
+     annotate("text", x = 10, y =-10, label = "18-34 ans") +
+     annotate("text", x = 9, y =-10, label = "35-44 ans") +
+     annotate("text", x = 8, y =-10, label = "45-54 ans") +
+     annotate("text", x = 7, y =-10, label = "55-64 ans") +
+     annotate("text", x = 6, y =-10, label = "64 ans et plus") +
+     annotate("text", x = 5, y =-30, label = "Ensemble") +
+     annotate("text", x = 5, y =-10, label = "18-34 ans") +
+     annotate("text", x = 4, y =-10, label = "35-44 ans") +
+     annotate("text", x = 3, y =-10, label = "45-54 ans") +
+     annotate("text", x = 2, y =-10, label = "55-64 ans") +
+     annotate("text", x = 1, y =-10, label = "64 ans et plus") +
     ylab("Pourcentage")+
     xlab(" ")+
     coord_flip() +
