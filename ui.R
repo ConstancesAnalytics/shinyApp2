@@ -1,19 +1,14 @@
 library(shiny)
 library('plotly')
 
-shinyUI(pageWithSidebar(
-
-    headerPanel("Données paracliniques"),
-
-    sidebarPanel(
-        dateRangeInput('dateRange',
-                        label = 'période',
-                        start = '2012-02-09',
-                        end = Sys.Date() + 2),
-        width = 3
-    ),
-
+shinyUI(
     mainPanel(
+        hr(),
+        dateRangeInput('dateRange',
+                       label = NULL,
+                       start = '2012-02-09',
+                       end = Sys.Date() + 2),
+        hr(),
         tabsetPanel(
             tabPanel(
                 "Summary CES 1",
@@ -157,7 +152,7 @@ shinyUI(pageWithSidebar(
                        )))
 
 
-))))
+), width = 12))
 
 
 
