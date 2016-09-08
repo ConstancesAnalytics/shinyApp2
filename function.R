@@ -84,25 +84,30 @@ resumer_bis<-function (x, inf=NULL, sup=NULL, vect=NULL) {
 
 # -------------------------------------------------------------- TDB
 
-TDB <- function(tbl,var, sexe, c_age) {
+TDB <- function(tbl, var, sexe, c_age) {
+    tbl = para
+    var = "HAU_MesTail"
+    sexe = 'SOC_BenCMU'
+    c_age = "clas_age3"
+    quant <- quantile(tbl[[var]], na.rm = TRUE) ## donnne les valeurs pour 0%, 25%, 50%, 75% et 100%
+    tbl[[var]] <- cut(floor(tbl[[var]]), breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
+    levels(tbl[[var]]) <- c(paste(quant[[1]], "-", quant[[2]]), paste(quant[[2]], "-", quant[[3]]), paste(quant[[3]], "-", quant[[4]]), paste(quant[[4]], "-", quant[[5]]))
 
     # remove rows with empty var or age cat
-    tbl <- filter(tbl, !is.na(tbl[[var]]), !is.na(tbl[[c_age]]))
-
-    #tbl[[var]] <- as.factor(gsub("^$", "VIDE", tbl[[var]]))  ## on ne pourrait pas mettre tbl[[var = ""]] <- "VIDE"
+    tbl <- filter(tbl, !is.na(tbl[[var]]), !is.na(tbl[[c_age]]), !is.na(tbl[[sexe]]), tbl[[var]] != "", tbl[[var]] != " ")
 
     # remove unused levels
     tbl[[var]] <- droplevels(tbl[[var]])
 
     # create tables with absolute numbers
-    tbl_freq_s_a <- dcast(tbl, tbl[[sexe]] + tbl[[c_age]] ~ tbl[[var]], length )[,-c(1,2)]
-    tbl_freq_a <- dcast(tbl,  tbl[[c_age]] ~ tbl[[var]],length)[,-c(1)]
-    tbl_freq_s_e <- rbind(dcast(tbl,  tbl[[sexe]] ~ tbl[[var]],length)[,-c(1)], dcast(tbl,  . ~ tbl[[var]], length)[,-c(1)])
+    tbl_freq_m_f <- dcast(tbl, tbl[[sexe]] + tbl[[c_age]] ~ tbl[[var]], length )[,-c(1,2)]
+    tbl_freq_e <- dcast(tbl,  tbl[[c_age]] ~ tbl[[var]],length)[,-c(1)]
+    tbl_freq_a <- rbind(dcast(tbl,  tbl[[sexe]] ~ tbl[[var]],length)[,-c(1)], dcast(tbl,  . ~ tbl[[var]], length)[,-c(1)])
 
     # create tables with frequencies
-    tbl_pr_s_a <- round(tbl_freq_s_a/apply(tbl_freq_s_a,1,sum,na.rm=TRUE)*100,2)
+    tbl_pr_m_f <- round(tbl_freq_m_f/apply(tbl_freq_m_f,1,sum,na.rm=TRUE)*100,2)
+    tbl_pr_e <- round(tbl_freq_e/apply(tbl_freq_e,1,sum,na.rm=TRUE)*100,2)
     tbl_pr_a <- round(tbl_freq_a/apply(tbl_freq_a,1,sum,na.rm=TRUE)*100,2)
-    tbl_pr_s_e <- round(tbl_freq_s_e/apply(tbl_freq_s_e,1,sum,na.rm=TRUE)*100,2)
 
     # create a vector with alternate positions for absolute values and %
     nClass <- length(levels(tbl[[var]]))
@@ -112,14 +117,15 @@ TDB <- function(tbl,var, sexe, c_age) {
     vect_c }
 
     # create combined tables
-    tbl_M_F <- cbind(tbl_freq_s_a, tbl_pr_s_a)[, vect_c]
-    tbl_E   <- cbind(tbl_freq_a, tbl_pr_a)[, vect_c]
-    tbl_A   <- cbind(tbl_freq_s_e, tbl_pr_s_e)[, vect_c]
+    tbl_M_F <- cbind(tbl_freq_m_f, tbl_pr_m_f)[, vect_c]
+    tbl_E   <- cbind(tbl_freq_e, tbl_pr_e)[, vect_c]
+    tbl_A   <- cbind(tbl_freq_a, tbl_pr_a)[, vect_c]
 
     # create a vector with alternate positions for age classes
     nClass_age <- length(levels(tbl[[c_age]]))
-    h <- 1:(3*nClass_age)
-    vect_a <- c(rbind(matrix(h, nrow = nClass_age), (3*nClass_age+1):(3*nClass_age+3)))
+    nSexe <- length(levels(tbl[[sexe]])) + 1
+    h <- 1:(nSexe*nClass_age)
+    vect_a <- c(rbind(matrix(h, nrow = nClass_age), (nSexe*nClass_age+1):(nSexe*nClass_age+nSexe)))
 
     # create combined table
     tdb <- rbind(tbl_M_F,tbl_E,tbl_A)[vect_a,]
