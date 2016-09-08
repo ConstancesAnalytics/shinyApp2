@@ -285,7 +285,7 @@ para <- select(para, ### ELIE : select variables from dictionnary
 # ----------------- type variables
 
 type_para <- list(
-    par_ces = "factor",
+    par_ces = "num",
     VDL_BiAvCorr = "num",
     VDL_BiSaCorr = "num",
     VDL_CeProAmbMono = "factor",
@@ -433,6 +433,7 @@ type_para <- list(
     SOC_DNaissance = "date",
     SOC_DatExam = "date",
     ldl = "num")
+
 # ----------------- clean variables
 
 para$resp_proc <-  as.factor(para$resp_proc)
@@ -448,8 +449,11 @@ para$AUD_AuGa2000 <- as.numeric(as.character(para$AUD_AuGa2000))
 para$AUD_AuGa4000 <- as.numeric(as.character(para$AUD_AuGa4000))
 para$AUD_AuGa8000 <- as.numeric(as.character(para$AUD_AuGa8000))
 
-
-
+for(var in names(type_para)) {
+    if(type_para[[var]] == "num") {para[[var]] <- as.numeric(para[[var]])}
+    else if(type_para[[var]] == "factor") {para[[var]] <- as.factor(para[[var]])}
+    else if(type_para[[var]] == "date") {para[[var]] <- as.Date(para[[var]])}
+}
 
 
 # ----------------- Calcul de l'age

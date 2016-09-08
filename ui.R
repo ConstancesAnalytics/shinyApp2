@@ -69,7 +69,7 @@ shinyUI(pageWithSidebar(
 
 
             tabPanel(
-                "Panel4",
+                "TDB",
                 fluidPage(
                     hr(),
                     fluidRow(
@@ -88,17 +88,25 @@ shinyUI(pageWithSidebar(
             ),
 
 
-            tabPanel("TDB GRAPHIQUE",
-                     fluidPage(sidebarLayout(
-                       sidebarPanel(
-                         uiOutput("variable6a"),
-                         width = 2
-                       ),
-                       mainPanel(
-                         plotOutput("plot1")
-                         )
-                     ))
+            tabPanel(
+                "TDB GRAPHIQUE",
+                fluidPage(
+                    hr(),
+                    fluidRow(
+                        column(6,
+                               selectInput("panel5var1", "CES", choices = c(levels(para_num$CES), "All"), selected = "All"),
+                               selectInput("panel5var2", "segmentation", choices = c("clas_age3","clas_age5","clas_age45an"))
+                        ),
+                        column(6,
+                               selectInput("panel5var3", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3]),
+                               uiOutput("panel5var4")
+                        )
+                    ),
+                    hr(),
+                    plotOutput("plot5", width = "100%")
+                )
             ),
+
 
             tabPanel("Panel7",
                      fluidPage(sidebarLayout(
