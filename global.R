@@ -4,7 +4,6 @@ library('DT')
 library('dplyr')
 library('reshape2')
 source('./function.R')
-library('ggExtra')
 
 # ----------------- load para file
 
