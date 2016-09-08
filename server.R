@@ -194,7 +194,7 @@ output$plot5 <- renderPlot({
     }
 
     all <- TDB(para_tmp, var_tmp,'SOC_Sex', input$panel5var2 )
-    p <- graph(all)
+    p <- graph(all, input$panel5var2)
     print(p)
 })
 
