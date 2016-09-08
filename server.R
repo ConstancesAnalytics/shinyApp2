@@ -139,7 +139,6 @@ output$datatable4  <- DT::renderDataTable({
            para_tmp <- para4() %>% filter(CESantenne == input$panel4var1) %>% select(-CESantenne,-SOC_DatExam,-par_ces ) ,
            para_tmp <- para4() )
 
-    #para_tmp <- para4() %>% filter(CESantenne == input$panel4var1)
     var_tmp <- dic_nom_para$variable[which(dic_nom_para$nom==input$panel4var4)]
     if (is.numeric(para_tmp[[var_tmp]])){
         min_var <- min(para_tmp[[var_tmp]], na.rm = TRUE)
@@ -162,6 +161,53 @@ output$datatable4  <- DT::renderDataTable({
 })
 
 # ---------------------------- Panel 5
+
+
+para5 <- reactive({
+    nom_var <- dic_nom_para %>% filter(categorie==input$panel5var3)
+    vect_select <- c(nom_var$variable, 'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne', 'SOC_NConstances')
+    out <- para_bounds_date() %>%  select( which(names(para_bounds_date()) %in% vect_select) )
+    out
+})
+
+output$panel5var4 <- renderUI({
+    all.list_num <- colnames(para5())
+    dic_nom_para_sel <- dic_nom_para %>% filter(variable %in% all.list_num)
+    selectInput("panel5var4", "variable", choices = dic_nom_para_sel$nom , selected = dic_nom_para_sel$nom[1])
+})
+
+output$plot5 <- renderPlot({
+
+    ifelse(input$panel5var1 %in% levels(para5()$CESantenne),
+           para_tmp <- para5() %>% filter(CESantenne == input$panel5var1) %>% select(-CESantenne,-SOC_DatExam,-par_ces ) ,
+           para_tmp <- para5() )
+
+    var_tmp <- dic_nom_para$variable[which(dic_nom_para$nom==input$panel5var4)]
+    if (is.numeric(para_tmp[[var_tmp]])){
+        quant <- quantile(para_tmp[[var_tmp]], na.rm = TRUE) ## donnne les valeurs pour 0%, 25%, 50%, 75% et 100%
+        para_tmp[[var_tmp]] <- cut(floor(para_tmp[[var_tmp]]), breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
+        #min_var <- min(para_tmp[[var_tmp]], na.rm = TRUE)
+        #max_var <- max(para_tmp[[var_tmp]], na.rm = TRUE)
+        #inter <- (max_var - min_var)/4
+        #para_tmp[[var_tmp]] <- cut(floor(para_tmp[[var_tmp]]), breaks = c(min_var, min_var + inter, min_var + 2*inter, min_var + 3*inter,max_var), right = FALSE, include.lowest = TRUE)
+        levels(para_tmp[[var_tmp]]) <- c(paste(quant[[1]], "-", quant[[2]]), paste(quant[[2]], "-", quant[[3]]), paste(quant[[3]], "-", quant[[4]]), paste(quant[[4]], "-", quant[[5]]))
+    }
+
+    all <- TDB(para_tmp, var_tmp,'SOC_Sex', input$panel5var2 )
+    p <- graph(all)
+    print(p)
+})
+
+
+
+# -----------------------------------------------
+# -----------------------------------------------
+# -----------------------------------------------
+# -----------------------------------------------
+
+
+
+
 
   output$variable3 <- renderUI({
     para<-para1()
@@ -277,13 +323,7 @@ output$datatable4  <- DT::renderDataTable({
 
 
 
-output$plot1 <- renderPlot({
-  para<-para1()
-  var_tmp6a=dic_nom_para$variable[which(dic_nom_para$nom==input$variable6a)]
-  all1<-TDB(para,var_tmp6a,'SOC_Sex', 'clas_age3' )
-    p<-graph(all1)
-    print(p)
-  },height = 700, width = 1200)
+
 
 
 output$plot2 <- renderPlot({
