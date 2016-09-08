@@ -185,7 +185,7 @@ output$plot5 <- renderPlot({
     var_tmp <- dic_nom_para$variable[which(dic_nom_para$nom==input$panel5var4)]
     if (is.numeric(para_tmp[[var_tmp]])){
         quant <- quantile(para_tmp[[var_tmp]], na.rm = TRUE) ## donnne les valeurs pour 0%, 25%, 50%, 75% et 100%
-        para_tmp[[var_tmp]] <- cut(floor(para_tmp[[var_tmp]]), breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
+        para_tmp[[var_tmp]] <- cut(para_tmp[[var_tmp]], breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
         #min_var <- min(para_tmp[[var_tmp]], na.rm = TRUE)
         #max_var <- max(para_tmp[[var_tmp]], na.rm = TRUE)
         #inter <- (max_var - min_var)/4
