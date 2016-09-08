@@ -85,13 +85,13 @@ resumer_bis<-function (x, inf=NULL, sup=NULL, vect=NULL) {
 # -------------------------------------------------------------- TDB
 
 TDB <- function(tbl, var, sexe, c_age) {
-    tbl = para
-    var = "HAU_MesTail"
-    sexe = 'SOC_BenCMU'
-    c_age = "clas_age3"
-    quant <- quantile(tbl[[var]], na.rm = TRUE) ## donnne les valeurs pour 0%, 25%, 50%, 75% et 100%
-    tbl[[var]] <- cut(floor(tbl[[var]]), breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
-    levels(tbl[[var]]) <- c(paste(quant[[1]], "-", quant[[2]]), paste(quant[[2]], "-", quant[[3]]), paste(quant[[3]], "-", quant[[4]]), paste(quant[[4]], "-", quant[[5]]))
+    # tbl = para
+    # var = "HAU_MesTail"
+    # sexe = 'SOC_BenCMU'
+    # c_age = "clas_age3"
+    # quant <- quantile(tbl[[var]], na.rm = TRUE) ## donnne les valeurs pour 0%, 25%, 50%, 75% et 100%
+    # tbl[[var]] <- cut(floor(tbl[[var]]), breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
+    # levels(tbl[[var]]) <- c(paste(quant[[1]], "-", quant[[2]]), paste(quant[[2]], "-", quant[[3]]), paste(quant[[3]], "-", quant[[4]]), paste(quant[[4]], "-", quant[[5]]))
 
     # remove rows with empty var or age cat
     tbl <- filter(tbl, !is.na(tbl[[var]]), !is.na(tbl[[c_age]]), !is.na(tbl[[sexe]]), tbl[[var]] != "", tbl[[var]] != " ")
