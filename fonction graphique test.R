@@ -50,7 +50,7 @@ TDB <- function(tbl,var, sexe, c_age) {
 
 
 graph<-function(x, classe){
-  
+
   if(classe=='clas_age3') {
     y=dim(x)[2]/2
     vec=seq(from = 2, to = 2*y, by = 2)
@@ -104,20 +104,20 @@ graph<-function(x, classe){
     #Pour 5 classes
     lign=c(1:5,7:11,13:17)
     pl=x[lign , vec]
-    
+
     colnames(pl) <- gsub("\\.1$","", colnames(pl))
     colnames(pl) <- gsub("\\)","[", colnames(pl))
     datm <- melt(cbind(pl, ind = rownames(pl)), id.vars = c('ind'))
-    
+
     Data <- group_by(datm,ind) %>% mutate(pos = cumsum(value) - (0.5 * value))
-    
-    
+
+
     #classes 5
     Data$ind   <- factor(Data$ind , levels=c(15,14,13,12,11,10,9,8,7,6,5,4,3,2,1))
-    
-    
-    
-    
+
+
+
+
     #Pour 5 class
     ggplot(Data,aes(x = ind, y = value,fill = variable)) +
       geom_bar(aes(fill = variable),stat="identity",width=0.4) +
@@ -164,11 +164,11 @@ else if(classe=='clas_age45an'){
   #Pour 2 classes
   lign=c(1:2,4:5,7:8)
   pl=x[lign , vec]
-  
+
   colnames(pl) <- gsub("\\.1$","", colnames(pl))
   colnames(pl) <- gsub("\\)","[", colnames(pl))
   datm <- melt(cbind(pl, ind = rownames(pl)), id.vars = c('ind'))
-  
+
   Data <- group_by(datm,ind) %>% mutate(pos = cumsum(value) - (0.5 * value))
   #classes 2
   Data$ind   <- factor(Data$ind , levels=c(6,5,4,3,2,1))
@@ -220,11 +220,11 @@ para$clas_age45an <- cut(floor(para$age), breaks = c(18,45,100), right = FALSE)
 levels(para$clas_age45an) <- c('18-45 ans','45 ans et plus')
 
 
-all=TDB(para,'class_IMC', 'SOC_Sex', 'clas_age45an')
+all=TDB(para,'class_IMC', 'SOC_Sex', 'clas_age3')
 
 
 
-p<-graph(all, 'clas_age45an')
+p<-graph(all, 'clas_age3')
 p
 
 apply
@@ -253,6 +253,44 @@ Data$ind   <- factor(Data$ind , levels=c(9,8,7,6,5,4,3,2,1))
 #Data$ind   <- factor(Data$ind , levels=c(6,5,4,3,2,1))
 #classes 5
 #Data$ind   <- factor(Data$ind , levels=c(15,14,13,12,11,10,9,8,7,6,5,4,3,2,1))
+
+
+
+#Pour trois class
+ggplot(Data,aes(x = ind, y = value,fill = variable)) +
+    geom_bar(aes(fill = variable),stat="identity",width=0.8) +
+    geom_text(aes(label = ifelse(value> 3, value,' '), y =pos), size = 5,colour="#FFFFFF")+
+    scale_fill_manual(values=c("#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e"))+
+    annotate("text", x = 9, y =-30, label = "Hommes") +
+    annotate("text", x = 9, y =-10, label = "18-29 ans") +
+    annotate("text", x = 8, y =-10, label = "30-59 ans") +
+    annotate("text", x = 7, y =-10, label = "60 ans et plus") +
+    annotate("text", x = 6, y =-30, label = "Femmes") +
+    annotate("text", x = 6, y =-10, label = "18-29 ans") +
+    annotate("text", x = 5, y =-10, label = "30-59 ans") +
+    annotate("text", x = 4, y =-10, label = "60 ans et plus") +
+    annotate("text", x = 3, y =-30, label = "Ensemble") +
+    annotate("text", x = 3, y =-10, label = "18-29 ans") +
+    annotate("text", x = 2, y =-10, label = "30-59 ans") +
+    annotate("text", x = 1, y =-10, label = "60 ans et plus") +
+    ylab("Pourcentage")+
+    xlab(" ")+
+    coord_flip() +
+    theme(#axis.line=element_blank(),
+        #axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        #axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position="top",
+        panel.background=element_blank(),
+        #panel.border=element_blank(),
+        #panel.grid.major=element_blank(),
+        #panel.grid.minor=element_blank(),
+        plot.background=element_blank(),
+        axis.title.x = element_text(face="plain",
+                                    colour="black",
+                                    size=12,hjust=0.6))
 
 
 
@@ -334,40 +372,5 @@ ggplot(Data,aes(x = ind, y = value,fill = variable)) +
         plot.background=element_blank())
 
 
-
-
-
-#Pour trois class
-ggplot(Data,aes(x = ind, y = value,fill = variable)) +
-    geom_bar(aes(fill = variable),stat="identity",width=0.8) +
-    geom_text(aes(label = ifelse(value> 3, value,' '), y =pos), size = 5,colour="#FFFFFF")+
-    scale_fill_manual(values=c("#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e","#5f3b55","#5b9ab1","#9ebb83", "#ef7d56", "#c86e7e"))+
-    annotate("text", x = 9, y =-30, label = "Hommes") +
-    annotate("text", x = 9, y =-10, label = "18-29 ans") +
-    annotate("text", x = 8, y =-10, label = "30-59 ans") +
-    annotate("text", x = 7, y =-10, label = "60 ans et plus") +
-    annotate("text", x = 6, y =-30, label = "Femmes") +
-    annotate("text", x = 6, y =-10, label = "18-29 ans") +
-    annotate("text", x = 5, y =-10, label = "30-59 ans") +
-    annotate("text", x = 4, y =-10, label = "60 ans et plus") +
-    annotate("text", x = 3, y =-30, label = "Ensemble") +
-    annotate("text", x = 3, y =-10, label = "18-29 ans") +
-    annotate("text", x = 2, y =-10, label = "30-59 ans") +
-    annotate("text", x = 1, y =-10, label = "60 ans et plus") +
-    ylab("Pourcentage")+
-    xlab(" ")+
-    coord_flip() +
-    theme(#axis.line=element_blank(),
-        #axis.text.x=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks=element_blank(),
-        #axis.title.x=element_blank(),
-        axis.title.y=element_blank(),
-        legend.position="top",
-        panel.background=element_blank(),
-        #panel.border=element_blank(),
-        #panel.grid.major=element_blank(),
-        #panel.grid.minor=element_blank(),
-        plot.background=element_blank())
 
 

@@ -4,6 +4,7 @@ library('DT')
 library('dplyr')
 library('reshape2')
 source('./function.R')
+library('ggExtra')
 
 # ----------------- load para file
 
@@ -279,7 +280,19 @@ para <- select(para, ### ELIE : select variables from dictionnary
                SOC_HomeTime,
                SOC_DNaissance,
                SOC_DatExam,
-               ldl)
+               ldl,
+               class_IMC,
+               class_BIO_ChoHDL,
+               class_BIO_Trig,
+               class_BIO_ChoTot,
+               BIO_ChoTot_LDL,
+               BIO_ChoHDL_LDL,
+               BIO_Trig_LDL,
+               class_ldl,
+               class_rth,
+               Class_Insuf_resp,
+               VDL_CLASS_AC_Mal,
+               VDL_CLASS_SC_Mal)
 
 
 # ----------------- type variables
