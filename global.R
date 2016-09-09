@@ -9,8 +9,11 @@ source('./function.R')
 
 load('./paracl_romain.RData')
 
+
+test <- as.numeric(unlist(strsplit("1, 2, 3", "[,]")))
+
 # ----------------- load dictionnary
-dic_nom_para <- read.csv('dic_nom_para.csv',header = TRUE, sep=';', encoding = "UTF-8")
+dic_nom_para <- read.csv('dictionnaire_para.csv',header = TRUE, sep=';', encoding = "UTF-8")
 dic_nom_para$nom <- as.character(dic_nom_para$nom)
 dic_nom_para$variable <- as.character(dic_nom_para$variable)
 
