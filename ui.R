@@ -98,7 +98,8 @@ shinyUI(
                         )
                     ),
                     hr(),
-                    plotOutput("plot5", width = "100%")
+                    plotOutput("plot5", width = "100%"),
+                    downloadButton('downloadPlot')
                 )
             ),
 
