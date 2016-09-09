@@ -84,25 +84,30 @@ resumer_bis<-function (x, inf=NULL, sup=NULL, vect=NULL) {
 
 # -------------------------------------------------------------- TDB
 
-TDB <- function(tbl, var, sexe, c_age) {
-    # tbl = para
-    # var = "HAU_MesTail"
-    # sexe = 'SOC_BenCMU'
-    # c_age = "clas_age3"
-    # quant <- quantile(tbl[[var]], na.rm = TRUE) ## donnne les valeurs pour 0%, 25%, 50%, 75% et 100%
-    # tbl[[var]] <- cut(floor(tbl[[var]]), breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
-    # levels(tbl[[var]]) <- c(paste(quant[[1]], "-", quant[[2]]), paste(quant[[2]], "-", quant[[3]]), paste(quant[[3]], "-", quant[[4]]), paste(quant[[4]], "-", quant[[5]]))
+tbl = para_bounds
+var = "HAU_MesTail"
+var1 = 'SOC_BenCMU'
+var2 = "clas_age3"
+quant <- quantile(tbl[[var]], na.rm = TRUE) ## donnne les valeurs pour 0%, 25%, 50%, 75% et 100%
+tbl[[var]] <- cut(floor(tbl[[var]]), breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
+levels(tbl[[var]]) <- c(paste(quant[[1]], "-", quant[[2]]), paste(quant[[2]], "-", quant[[3]]), paste(quant[[3]], "-", quant[[4]]), paste(quant[[4]], "-", quant[[5]]))
+
+
+
+TDB <- function(tbl, var, var1, var2) {
 
     # remove rows with empty var or age cat
-    tbl <- filter(tbl, !is.na(tbl[[var]]), !is.na(tbl[[c_age]]), !is.na(tbl[[sexe]]), tbl[[var]] != "", tbl[[var]] != " ")
+    tbl <- filter(tbl, !is.na(tbl[[var]]), !is.na(tbl[[var2]]), !is.na(tbl[[var1]]), tbl[[var]] != "", tbl[[var]] != " ")
 
     # remove unused levels
     tbl[[var]] <- droplevels(tbl[[var]])
+    tbl[[var1]] <- droplevels(tbl[[var1]])
+    tbl[[var2]] <- droplevels(tbl[[var2]])
 
     # create tables with absolute numbers
-    tbl_freq_m_f <- dcast(tbl, tbl[[sexe]] + tbl[[c_age]] ~ tbl[[var]], length )[,-c(1,2)]
-    tbl_freq_e <- dcast(tbl,  tbl[[c_age]] ~ tbl[[var]],length)[,-c(1)]
-    tbl_freq_a <- rbind(dcast(tbl,  tbl[[sexe]] ~ tbl[[var]],length)[,-c(1)], dcast(tbl,  . ~ tbl[[var]], length)[,-c(1)])
+    tbl_freq_m_f <- dcast(tbl, tbl[[var1]] + tbl[[var2]] ~ tbl[[var]], length )[,-c(1,2)]
+    tbl_freq_e <- dcast(tbl,  tbl[[var2]] ~ tbl[[var]],length)[,-c(1)]
+    tbl_freq_a <- rbind(dcast(tbl,  tbl[[var1]] ~ tbl[[var]],length)[,-c(1)], dcast(tbl,  . ~ tbl[[var]], length)[,-c(1)])
 
     # create tables with frequencies
     tbl_pr_m_f <- round(tbl_freq_m_f/apply(tbl_freq_m_f,1,sum,na.rm=TRUE)*100,2)
@@ -122,36 +127,44 @@ TDB <- function(tbl, var, sexe, c_age) {
     tbl_A   <- cbind(tbl_freq_a, tbl_pr_a)[, vect_c]
 
     # create a vector with alternate positions for age classes
-    nClass_age <- length(levels(tbl[[c_age]]))
-    nSexe <- length(levels(tbl[[sexe]])) + 1
-    h <- 1:(nSexe*nClass_age)
-    vect_a <- c(rbind(matrix(h, nrow = nClass_age), (nSexe*nClass_age+1):(nSexe*nClass_age+nSexe)))
+    nClass_age <- length(levels(tbl[[var2]]))
+    nvar1 <- length(levels(tbl[[var1]])) + 1
+    h <- 1:(nvar1*nClass_age)
+    vect_a <- c(rbind(matrix(h, nrow = nClass_age), (nvar1*nClass_age+1):(nvar1*nClass_age+nvar1)))
 
     # create combined table
     tdb <- rbind(tbl_M_F,tbl_E,tbl_A)[vect_a,]
     tdb
 }
 
-tbl_char <- function(x,label){
-# format the table
+
+
+
+tbl_char <- function(x, df, var1, var2){
+
+  # remove unused levels
+  df[[var1]] <- droplevels(tbl[[var1]])
+  df[[var2]] <- droplevels(tbl[[var2]])
+
+  label1 <- append(levels(df[[var2]]), "Ensemble")
+  label2 <- append(levels(df[[var1]]), "Ensemble")
+
+  # format the table
   y <- sapply(x, function(x) iconv(x,  "UTF-8", "latin1"))
-  ny <- nrow(y)
-  cvide <- rep('', length(label))
-  rvide <- rep('', ncol(x)+1)
+  c_age <- rep(label1, length(label2))
+  c_vide <- rep("", length(label1) * length(label2))
+  r_vide <- rep('', ncol(y)+1)
 
-  k_h  <- cbind(cvide, label, y[1:(ny/3),])
-  k1_h <- rbind(c('Homme', rvide), k_h)
-
-  k_f  <- cbind(cvide, label, y[((ny/3)+1):(2*(ny/3)),])
-  k1_f <- rbind(c('Femme', rvide), k_f)
-
-  k_e  <- cbind(cvide, label, y[(2*((ny/3))+1):(3*(ny/3)),])
-  k1_e <- rbind(c('Ensemble', rvide), k_e)
-
-  all_ch <- rbind(k1_h, k1_f, k1_e)
-
-  colnames(all_ch)[1] <- "sexe"
-  colnames(all_ch)[2] <- "age"
+  y_bind1 <- cbind(c_vide, c_age, y)
+  y_bind2 <- c("", r_vide)
+  for(i in 1:length(label2)) {
+      nstart <- 1 + (i-1)*length(label1)
+      nstop <- i*length(label1)
+      y_bind2 <- rbind(y_bind2, c(label2[i], r_vide), y_bind1[nstart:nstop,])
+  }
+  all_ch <- y_bind2[-1, ]
+  colnames(all_ch)[1] <- var1
+  colnames(all_ch)[2] <- var2
   for (i in 2:(length(colnames(all_ch))/2)) {
       colnames(all_ch)[2*i] <- "%"
   }
@@ -161,6 +174,20 @@ tbl_char <- function(x,label){
 
 # --------------------------------------------------------------
 
+# tbl = para
+# var = "HAU_MesTail"
+# var1 = 'SOC_BenCMU'
+# var2 = "clas_age3"
+# quant <- quantile(tbl[[var]], na.rm = TRUE) ## donnne les valeurs pour 0%, 25%, 50%, 75% et 100%
+# tbl[[var]] <- cut(floor(tbl[[var]]), breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
+# levels(tbl[[var]]) <- c(paste(quant[[1]], "-", quant[[2]]), paste(quant[[2]], "-", quant[[3]]), paste(quant[[3]], "-", quant[[4]]), paste(quant[[4]], "-", quant[[5]]))
+
+
+# x <- tdb
+#
+# var1 <- c_age
+# var2 <- sexe
+# tbl_char(x, para, c_age, sexe)
 
 graph<-function(x, classe){
 
