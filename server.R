@@ -121,7 +121,7 @@ output$datatable2 <- DT::renderDataTable({
 
 para4 <- reactive({
     nom_var <- dic_nom_para %>% filter(categorie==input$panel4var3)
-    vect_select <- c(nom_var$variable, 'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne', 'SOC_NConstances')
+    vect_select <- c(nom_var$variable, 'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne', 'SOC_NConstances', "SOC_BenCMU")
     out <- para_bounds_date() %>%  select( which(names(para_bounds_date()) %in% vect_select) )
     out
 })
@@ -147,9 +147,8 @@ output$datatable4  <- DT::renderDataTable({
         para_tmp[[var_tmp]] <- cut(floor(para_tmp[[var_tmp]]), breaks = c(min_var, min_var + inter, min_var + 2*inter, min_var + 3*inter,max_var), right = FALSE, include.lowest = TRUE)
         levels(para_tmp[[var_tmp]]) <- c(paste(min_var, "-", min_var + inter), paste(min_var + inter, "-", min_var + 2*inter), paste(min_var + 2*inter, "-", min_var + 3*inter), paste(min_var + 3*inter, "-", max_var))
     }
-    all <- TDB(para_tmp, var_tmp,'SOC_Sex', input$panel4var2 )
-    lab <- append(levels(para_tmp[,input$panel4var2]),c('Ensemble'))
-    data_sum <- tbl_char(all,lab)
+    all <- TDB(para_tmp, var_tmp,'SOC_BenCMU', input$panel4var2 )
+    data_sum <- tbl_char(all, para_tmp, 'SOC_BenCMU', input$panel4var2)
     DT::datatable(
         data_sum, options = list(
             lengthMenu = list(c(5, 30, -1), c('5', '15', 'All')),
