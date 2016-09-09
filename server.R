@@ -185,7 +185,7 @@ output$panel5var4 <- renderUI({
     selectInput("panel5var4", "variable", choices = dic_nom_para_sel$nom , selected = dic_nom_para_sel$nom[1])
 })
 
-output$plot5 <- renderPlot({
+Plot1 <- reactive({
 
     ifelse(input$panel5var1 %in% levels(para5()$CESantenne),
            para_tmp <- para5() %>% filter(CESantenne == input$panel5var1) %>% select(-CESantenne,-SOC_DatExam,-par_ces ) ,
@@ -203,10 +203,26 @@ output$plot5 <- renderPlot({
     }
 
     all <- TDB(para_tmp, var_tmp,'SOC_Sex', input$panel5var2 )
-    p <- graph(all, input$panel5var2)
+   graph(all, input$panel5var2)
+
+
+})
+
+output$plot5 <- renderPlot({
+    p <- Plot1()
     print(p)
 })
 
+
+output$downloadPlot<-downloadHandler(
+    filename = function() {
+        paste('plot', '.png', sep='')
+    },
+    content=function(file){
+        png(file)
+        print(Plot1())
+        dev.off()
+    })
 
 
 # -----------------------------------------------

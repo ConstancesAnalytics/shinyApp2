@@ -17,7 +17,11 @@ dic_nom_para <- read.csv('dictionnaire_para.csv',header = TRUE, sep=';', encodin
 dic_nom_para$nom <- as.character(dic_nom_para$nom)
 dic_nom_para$variable <- as.character(dic_nom_para$variable)
 
+dic_nom_para_complet <- read.csv('dictionnaire_para.csv',header = TRUE, sep=';', encoding = "UTF-8")
 
+x=
+    do.call()
+do.call(as.character(dic_nom_para_complet$borne[1]),eval(parse(text=x)))
 
 # ----------------- define bounds paraclinique
 
