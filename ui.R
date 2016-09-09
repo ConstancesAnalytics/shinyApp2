@@ -68,13 +68,20 @@ shinyUI(
                 fluidPage(
                     hr(),
                     fluidRow(
-                        column(6,
-                               selectInput("panel4var1", "CES", choices = c(levels(para_num$CES), "All"), selected = "All"),
-                               selectInput("panel4var2", "segmentation", choices = c("clas_age3","clas_age5","clas_age45an"))
+                        column(3,
+                               selectInput("panel4var1", "CES", choices = c(levels(para_num$CES), "All"), selected = "All")
                         ),
-                        column(6,
-                               selectInput("panel4var3", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3]),
-                               uiOutput("panel4var4")
+                        column(3,
+                               selectInput("panel4var2", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3]),
+                               uiOutput("panel4var3")
+                        ),
+                        column(3,
+                               selectInput("panel4var4", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3]),
+                               uiOutput("panel4var5")
+                        ),
+                        column(3,
+                               selectInput("panel4var6", "catégorie", choices = c(levels(dic_nom_para$cat)), selected =c(levels(dic_nom_para$cat))[3]),
+                               uiOutput("panel4var7")
                         )
                     ),
                     hr(),
