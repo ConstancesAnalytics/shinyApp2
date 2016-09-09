@@ -119,36 +119,46 @@ output$datatable2 <- DT::renderDataTable({
 
 # ---------------------------- Panel 4
 
-para4 <- reactive({
-    nom_var <- dic_nom_para %>% filter(categorie==input$panel4var3)
-    vect_select <- c(nom_var$variable, 'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne', 'SOC_NConstances', "SOC_BenCMU")
-    out <- para_bounds_date() %>%  select( which(names(para_bounds_date()) %in% vect_select) )
-    out
+output$panel4var3 <- renderUI({
+    dic_nom_para_sel <- dic_nom_para %>% filter(categorie==input$panel4var2)
+    selectInput("panel4var3", "variable 1", choices = dic_nom_para_sel$nom , selected = dic_nom_para_sel$nom[1])
 })
 
-output$panel4var4 <- renderUI({
-    #para_fac <- para4()[ , sapply(para4(),  is.factor)]
-    all.list_num <- colnames(para4())
-    dic_nom_para_sel <- dic_nom_para %>% filter(variable %in% all.list_num)
-    selectInput("panel4var4", "variable", choices = dic_nom_para_sel$nom , selected = dic_nom_para_sel$nom[1])
+output$panel4var5 <- renderUI({
+    dic_nom_para_sel <- dic_nom_para %>% filter(categorie==input$panel4var4)
+    selectInput("panel4var5", "variable 2", choices = dic_nom_para_sel$nom , selected = dic_nom_para_sel$nom[1])
+})
+
+output$panel4var7 <- renderUI({
+    dic_nom_para_sel <- dic_nom_para %>% filter(categorie==input$panel4var6)
+    selectInput("panel4var7", "variable", choices = dic_nom_para_sel$nom , selected = dic_nom_para_sel$nom[1])
 })
 
 output$datatable4  <- DT::renderDataTable({
 
-    ifelse(input$panel4var1 %in% levels(para4()$CESantenne),
-           para_tmp <- para4() %>% filter(CESantenne == input$panel4var1) %>% select(-CESantenne,-SOC_DatExam,-par_ces ) ,
-           para_tmp <- para4() )
+    nom_var1 <- dic_nom_para %>% filter(nom==input$panel4var3)
+    nom_var2 <- dic_nom_para %>% filter(nom==input$panel4var5)
+    nom_var <- dic_nom_para %>% filter(nom==input$panel4var7)
 
-    var_tmp <- dic_nom_para$variable[which(dic_nom_para$nom==input$panel4var4)]
+    vect_select <- c(nom_var1$variable, nom_var2$variable, nom_var$variable, 'CESantenne','SOC_CES_NCes' ,'SOC_DatExam','par_ces', 'clas_age5','clas_age45an','clas_age3','SOC_Sex','SOC_moisanne','SOC_anne', 'SOC_NConstances')
+    para_tmp <- para_bounds_date() %>%  select( which(names(para_bounds_date()) %in% vect_select) )
+
+    ifelse(input$panel4var1 %in% levels(para_tmp$CESantenne),
+           para_tmp <- para_tmp %>% filter(CESantenne == input$panel4var1) %>% select(-CESantenne,-SOC_DatExam,-par_ces ) ,
+           para_tmp <- para_tmp )
+
+    var_tmp <- nom_var$variable
     if (is.numeric(para_tmp[[var_tmp]])){
-        min_var <- min(para_tmp[[var_tmp]], na.rm = TRUE)
-        max_var <- max(para_tmp[[var_tmp]], na.rm = TRUE)
-        inter <- (max_var - min_var)/4
-        para_tmp[[var_tmp]] <- cut(floor(para_tmp[[var_tmp]]), breaks = c(min_var, min_var + inter, min_var + 2*inter, min_var + 3*inter,max_var), right = FALSE, include.lowest = TRUE)
-        levels(para_tmp[[var_tmp]]) <- c(paste(min_var, "-", min_var + inter), paste(min_var + inter, "-", min_var + 2*inter), paste(min_var + 2*inter, "-", min_var + 3*inter), paste(min_var + 3*inter, "-", max_var))
+        quant <- quantile(para_tmp[[var_tmp]], na.rm = TRUE) ## donnne les valeurs pour 0%, 25%, 50%, 75% et 100%
+        para_tmp[[var_tmp]] <- cut(para_tmp[[var_tmp]], breaks = c(quant[[1]], quant[[2]], quant[[3]], quant[[4]], quant[[5]]), right = FALSE, include.lowest = TRUE)
+        #min_var <- min(para_tmp[[var_tmp]], na.rm = TRUE)
+        #max_var <- max(para_tmp[[var_tmp]], na.rm = TRUE)
+        #inter <- (max_var - min_var)/4
+        #para_tmp[[var_tmp]] <- cut(floor(para_tmp[[var_tmp]]), breaks = c(min_var, min_var + inter, min_var + 2*inter, min_var + 3*inter,max_var), right = FALSE, include.lowest = TRUE)
+        levels(para_tmp[[var_tmp]]) <- c(paste(quant[[1]], "-", quant[[2]]), paste(quant[[2]], "-", quant[[3]]), paste(quant[[3]], "-", quant[[4]]), paste(quant[[4]], "-", quant[[5]]))
     }
-    all <- TDB(para_tmp, var_tmp,'SOC_BenCMU', input$panel4var2 )
-    data_sum <- tbl_char(all, para_tmp, 'SOC_BenCMU', input$panel4var2)
+    all <- TDB(para_tmp, var_tmp, nom_var1$variable , nom_var2$variable)
+    data_sum <- tbl_char(all, para_tmp, nom_var1$variable , nom_var2$variable)
     DT::datatable(
         data_sum, options = list(
             lengthMenu = list(c(5, 30, -1), c('5', '15', 'All')),
